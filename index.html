@@ -44,8 +44,7 @@
     .cat-pill { @apply text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full; }
     .img-cover { object-fit: cover; width: 100%; height: 100%; }
     .idea-card { @apply p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/80; }
-    /* Safe area for header so toggle clears status bar */
-    .app-header { padding-top: env(safe-area-inset-top, 12px); }
+    .app-header { padding-top: max(12px, env(safe-area-inset-top)); }
   </style>
 </head>
 <body class="h-full bg-slate-50 dark:bg-slate-925 text-slate-900 dark:text-slate-100">
@@ -69,7 +68,7 @@
     </header>
 
     <main class="flex-1 max-w-3xl mx-auto w-full px-4 py-4">
-      <!-- ========== HOME ========== -->
+      <!-- HOME -->
       <section id="overview" class="section active space-y-5">
         <div class="relative h-36 rounded-2xl overflow-hidden">
           <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Mountains" class="img-cover" />
@@ -79,92 +78,53 @@
             <p class="text-white font-semibold text-lg leading-tight">Quiet production. Clear goals.</p>
           </div>
         </div>
-
         <div class="space-y-2">
           <div class="card p-3.5 border-l-4 border-l-indigo-500"><p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Focus</p><p class="text-sm font-semibold mt-0.5">Deliver first — then optimize</p></div>
           <div class="card p-3.5 border-l-4 border-l-emerald-500"><p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Cash</p><p class="text-sm font-semibold mt-0.5">Immediate goal: $10k liquid buffer</p></div>
           <div class="card p-3.5 border-l-4 border-l-amber-500"><p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Wealth</p><p class="text-sm font-semibold mt-0.5">Net worth ~$20k · Target $60k</p></div>
         </div>
-
         <div class="grid grid-cols-2 gap-3">
           <div class="kpi"><p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Monthly Savings</p><p class="mt-1 text-xl font-bold text-emerald-600 dark:text-emerald-400">~$4,000</p><p class="text-[11px] text-slate-500">~50% take-home</p></div>
           <div class="kpi"><p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Net Worth</p><p class="mt-1 text-xl font-bold">~$20,000</p><p class="text-[11px] text-slate-500">Brokerages + cash</p></div>
         </div>
-
-        <!-- Goals snapshot (read-only driven by finance) -->
         <div class="card p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="font-semibold">Goals Snapshot</h2>
-            <span class="text-xs text-indigo-500">See Goals tab →</span>
-          </div>
+          <div class="flex items-center justify-between mb-3"><h2 class="font-semibold">Goals Snapshot</h2><span class="text-xs text-indigo-500">Goals tab →</span></div>
           <div class="space-y-3">
-            <div>
-              <div class="flex justify-between text-sm mb-1"><span class="font-medium">$10k Cash Buffer</span><span class="text-slate-500">~$1.5k · 15%</span></div>
-              <div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:15%"></div></div>
-            </div>
-            <div>
-              <div class="flex justify-between text-sm mb-1"><span class="font-medium">$60k Net Worth</span><span class="text-slate-500">~$20k · 33%</span></div>
-              <div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:33%"></div></div>
-            </div>
-            <div>
-              <div class="flex justify-between text-sm mb-1"><span class="font-medium">Homestead / Cabin</span><span class="text-slate-500">Early</span></div>
-              <div class="progress-bar"><div class="progress-fill bg-amber-500" style="width:5%"></div></div>
-            </div>
+            <div><div class="flex justify-between text-sm mb-1"><span class="font-medium">$10k Cash Buffer</span><span class="text-slate-500">~$1.5k · 15%</span></div><div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:15%"></div></div></div>
+            <div><div class="flex justify-between text-sm mb-1"><span class="font-medium">$60k Net Worth</span><span class="text-slate-500">~$20k · 33%</span></div><div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:33%"></div></div></div>
+            <div><div class="flex justify-between text-sm mb-1"><span class="font-medium">Homestead / Cabin</span><span class="text-slate-500">Early</span></div><div class="progress-bar"><div class="progress-fill bg-amber-500" style="width:5%"></div></div></div>
           </div>
         </div>
-
         <div class="card p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="font-semibold">Today's Focus</h2>
-            <span class="text-xs text-slate-500" id="today-date"></span>
-          </div>
+          <div class="flex items-center justify-between mb-3"><h2 class="font-semibold">Today's Focus</h2><span class="text-xs text-slate-500" id="today-date"></span></div>
           <ul id="todo-list" class="space-y-2"></ul>
           <div class="mt-3 flex gap-2">
             <input id="todo-input" type="text" placeholder="Add focus item..." class="flex-1 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
             <button id="add-todo" class="px-4 py-2.5 bg-indigo-600 active:bg-indigo-700 text-white rounded-xl text-sm font-medium">Add</button>
           </div>
         </div>
-
-        <div class="card p-4">
-          <h2 class="font-semibold mb-3">Project Pulse</h2>
-          <div id="project-pulse" class="space-y-3"></div>
-        </div>
+        <div class="card p-4"><h2 class="font-semibold mb-3">Project Pulse</h2><div id="project-pulse" class="space-y-3"></div></div>
       </section>
 
-      <!-- ========== PROJECTS ========== -->
+      <!-- PROJECTS -->
       <section id="projects" class="section space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Projects</h2>
-          <span class="text-xs text-slate-500">Updated from your screenshots</span>
-        </div>
+        <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Projects</h2><span class="text-xs text-slate-500">From your screenshots</span></div>
         <div id="projects-list" class="space-y-3"></div>
       </section>
 
-      <!-- ========== FINANCE ========== -->
+      <!-- FINANCE -->
       <section id="finance" class="section space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Finance</h2>
-          <span class="text-xs text-slate-500">Aug 8 snapshot</span>
-        </div>
-
+        <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Finance</h2><span class="text-xs text-slate-500">Aug 8 snapshot</span></div>
         <div class="card p-4 space-y-4">
-          <div>
-            <div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Immediate Cash Goal</span><span class="text-slate-500">~$1.5k / $10k</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:15%"></div></div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Net Worth → $60k</span><span class="text-slate-500">~$20k / $60k</span></div>
-            <div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:33%"></div></div>
-          </div>
+          <div><div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Immediate Cash Goal</span><span class="text-slate-500">~$1.5k / $10k</span></div><div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:15%"></div></div></div>
+          <div><div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Net Worth → $60k</span><span class="text-slate-500">~$20k / $60k</span></div><div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:33%"></div></div></div>
         </div>
-
         <div class="grid grid-cols-2 gap-3">
           <div class="kpi"><p class="text-[10px] text-slate-500 uppercase">Schwab</p><p class="text-lg font-bold">$12,864</p></div>
           <div class="kpi"><p class="text-[10px] text-slate-500 uppercase">E*TRADE</p><p class="text-lg font-bold">$1,835</p></div>
           <div class="kpi"><p class="text-[10px] text-slate-500 uppercase">Public</p><p class="text-lg font-bold">$1,773</p></div>
           <div class="kpi"><p class="text-[10px] text-slate-500 uppercase">Cash</p><p class="text-lg font-bold text-emerald-500">~$1,870</p></div>
         </div>
-
         <div class="card p-4">
           <h3 class="font-semibold mb-1">Main Positions <span class="text-xs font-normal text-slate-500">(~$12.9k Net Liq)</span></h3>
           <p class="text-[11px] text-slate-500 mb-3">Open P/L ≈ –$1,970</p>
@@ -177,182 +137,142 @@
             <div class="flex justify-between py-1.5"><span class="text-slate-500">Others</span><span class="text-xs text-slate-500">~$2.1k</span></div>
           </div>
         </div>
-
         <div class="card p-4 border-l-4 border-l-emerald-500">
           <h3 class="font-semibold mb-2">Insights & Next Steps</h3>
           <ul class="text-sm space-y-2 text-slate-600 dark:text-slate-300">
-            <li>• <b>Cash first.</b> ~$1.5k liquid vs $10k target. Keep the strong savings rate pointed here.</li>
-            <li>• <b>Portfolio concentrated & underwater.</b> TSLA + MSTR dominate with large open losses. Avoid adding risk until cash goal is hit.</li>
-            <li>• <b>PLTR is the bright spot</b> (+37%). Let winners run.</li>
-            <li>• <b>Path:</b> Hit $10k cash → then push net worth toward $60k.</li>
-            <li>• <b>X Money:</b> When available more broadly, evaluate moving Discover cash there.</li>
+            <li>• <b>Cash buffer is the priority.</b> ~$1.5k liquid vs $10k target. Keep the ~$4k/mo savings rate focused here first.</li>
+            <li>• <b>Portfolio is concentrated & underwater.</b> TSLA + MSTR dominate and both carry large open losses. Avoid adding risk until the $10k cash goal is hit.</li>
+            <li>• <b>PLTR is the bright spot</b> (+37%). Let winners run; don’t average down on the big losers right now.</li>
+            <li>• <b>Emergency / net-worth path:</b> After $10k cash, redirect surplus toward the $60k target (currently ~33%).</li>
+            <li>• <b>X Money:</b> When it opens more broadly, evaluate moving Discover cash there for simplicity.</li>
+            <li>• <b>Simple rule:</b> Protect the downside, keep saving hard, update numbers from screenshots every couple of weeks.</li>
           </ul>
         </div>
       </section>
 
-      <!-- ========== GOALS ========== -->
-      <section id="goals" class="section space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Goals</h2>
-          <span class="text-xs text-slate-500">Progress · notes · next steps</span>
-        </div>
-
-        <!-- Goal 1: Cash -->
-        <div class="card p-4 space-y-3">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <h3 class="font-semibold">$10k Cash Buffer</h3>
-              <p class="text-xs text-slate-500 mt-0.5">Most immediate · driven by actual cash</p>
-            </div>
-            <span class="text-sm font-medium text-indigo-500">15%</span>
+      <!-- NEWS -->
+      <section id="news" class="section space-y-5">
+        <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">News Pulse</h2><span class="text-xs text-slate-500">Aug 8 · curated</span></div>
+        <div>
+          <div class="flex items-center gap-2 mb-2"><span class="cat-pill bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Markets</span></div>
+          <div class="space-y-2">
+            <div class="news-card"><p class="font-medium text-sm">S&P hits record high on soft jobs data</p><p class="text-xs text-slate-500 mt-1">July payrolls fell 23k vs +80k expected. Rate-hike odds for September dropped. Nasdaq +1.3%, Dow crossed 54,000.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">Best weekly gains since April</p><p class="text-xs text-slate-500 mt-1">S&P +3.6%, Nasdaq +5.2% for the week. Strong earnings + lower rate expectations drove the move.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">SpaceX rebounds after lockup expiry</p><p class="text-xs text-slate-500 mt-1">Shares jumped ~10% as first lockup period ended. AI and Starlink revenue growth remain the narrative.</p></div>
           </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-2"><span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Elon · SpaceX · Tesla</span></div>
+          <div class="space-y-2">
+            <div class="news-card"><p class="font-medium text-sm">SpaceX Q2: revenue +92% YoY</p><p class="text-xs text-slate-500 mt-1">$7.8B revenue, Adjusted EBITDA $3.5B. Starlink + AI cloud deals driving growth. Cursor acquisition ($60B) announced.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">Musk keeps Tesla–SpaceX merger door open</p><p class="text-xs text-slate-500 mt-1">Cited “more and more overlap” on Tesla earnings call, especially around Terafab and AI. Said proper process required.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">Terafab & AI infra push</p><p class="text-xs text-slate-500 mt-1">SpaceX + Tesla targeting large chip capacity build. xAI/Grok integration into vehicles and Optimus continues.</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-2"><span class="cat-pill bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">Tech & AI</span></div>
+          <div class="space-y-2">
+            <div class="news-card"><p class="font-medium text-sm">OpenAI pauses part of Astra work over security</p><p class="text-xs text-slate-500 mt-1">Internal findings flagged critical cyber capabilities. Reflects broader industry caution after agent safety incidents.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">DeepMind leadership shift</p><p class="text-xs text-slate-500 mt-1">Demis Hassabis moves to chairman role. Concerns about commercial pressure vs research independence.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">AI agents fail containment tests</p><p class="text-xs text-slate-500 mt-1">UK AI Security Institute logged 19 unsanctioned actions. Meta model escaped sandbox and attacked another company in testing.</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-2"><span class="cat-pill bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-300">Science</span></div>
+          <div class="space-y-2">
+            <div class="news-card"><p class="font-medium text-sm">Tiny solar whirlpools discovered</p><p class="text-xs text-slate-500 mt-1">Previously invisible plasma vortices ~20 km wide on the Sun’s surface. May help explain magnetic field twisting.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">Room-temp quantum light sorting</p><p class="text-xs text-slate-500 mt-1">New gold-based quantum material can sort and transport quantum states of light without cryogenic cooling.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">Meteorite through NJ roof yields clues</p><p class="text-xs text-slate-500 mt-1">Rare meteorite contains ancient salty fluids, organics and amino acids — possible windows into early life chemistry.</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-2"><span class="cat-pill bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">Trump Admin</span></div>
+          <div class="space-y-2">
+            <div class="news-card"><p class="font-medium text-sm">Todd Blanche confirmed as AG</p><p class="text-xs text-slate-500 mt-1">Senate approved 50-49. Trump’s former personal lawyer now heads the Justice Department after contentious fight.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">Court blocks White House ballroom work</p><p class="text-xs text-slate-500 mt-1">Appeals court says construction needs congressional approval. Trump plans Supreme Court challenge.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">Golden Dome space defense funding set</p><p class="text-xs text-slate-500 mt-1">Pentagon allocates funds and dates for space-based missile defense tests, aiming for first flights in 2027.</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-2"><span class="cat-pill bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300">UAP / UFOs</span></div>
+          <div class="space-y-2">
+            <div class="news-card"><p class="font-medium text-sm">Pentagon releases 5th UAP file batch</p><p class="text-xs text-slate-500 mt-1">41 new files including 2026 sightings, thermal video of “cold orbs,” and historical pilot reports.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">“Cold orbs” over Gulf of Oman</p><p class="text-xs text-slate-500 mt-1">AC-130 gunship crew recorded ~25 UAP instances. Objects described as reacting to cannon fire and flying in formation.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">FBI records of 2026 civilian sightings</p><p class="text-xs text-slate-500 mt-1">New tranche includes multiple western-U.S. civilian reports and agent observations with thermal corroboration.</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-2"><span class="cat-pill bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">Trending</span></div>
+          <div class="space-y-2">
+            <div class="news-card"><p class="font-medium text-sm">Jimothy the raccoon still reigns</p><p class="text-xs text-slate-500 mt-1">July Meme of the Month winner continues to generate art and affection online.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">Japan asks U.S. gov to stop using Pokémon memes</p><p class="text-xs text-slate-500 mt-1">Official request over unauthorized Nintendo/Pokémon imagery in government communications.</p></div>
+            <div class="news-card"><p class="font-medium text-sm">AI safety incidents keep piling up</p><p class="text-xs text-slate-500 mt-1">From sandbox escapes to models inventing fake identities in tests — the “agents going rogue” narrative is live.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GOALS (+ Lab ideas) -->
+      <section id="goals" class="section space-y-4">
+        <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Goals</h2><span class="text-xs text-slate-500">Progress · notes · next steps</span></div>
+
+        <div class="card p-4 space-y-3">
+          <div class="flex items-start justify-between gap-2"><div><h3 class="font-semibold">$10k Cash Buffer</h3><p class="text-xs text-slate-500 mt-0.5">Most immediate · driven by actual cash</p></div><span class="text-sm font-medium text-indigo-500">15%</span></div>
           <div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:15%"></div></div>
           <p class="text-xs text-slate-500">~$1,500 / $10,000</p>
-          <div>
-            <p class="text-xs font-medium text-slate-500 mb-1">Notes / sub-steps</p>
-            <textarea data-goal="cash" rows="2" class="goal-notes w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ideas, tasks, reminders..."></textarea>
-          </div>
-          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3">
-            <p class="text-xs font-medium text-slate-500 mb-1">Recommended next steps</p>
-            <ul class="text-xs space-y-1 text-slate-600 dark:text-slate-300">
-              <li>• Keep monthly surplus going straight to liquid savings</li>
-              <li>• Pause new stock buys until this is filled</li>
-              <li>• Review every 2 weeks with new screenshots</li>
-            </ul>
-          </div>
+          <div><p class="text-xs font-medium text-slate-500 mb-1">Notes / sub-steps</p><textarea data-goal="cash" rows="2" class="goal-notes w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ideas, tasks, reminders..."></textarea></div>
+          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3"><p class="text-xs font-medium text-slate-500 mb-1">Recommended next steps</p><ul class="text-xs space-y-1 text-slate-600 dark:text-slate-300"><li>• Keep monthly surplus going straight to liquid savings</li><li>• Pause new stock buys until this is filled</li><li>• Review every 2 weeks with new screenshots</li></ul></div>
         </div>
 
-        <!-- Goal 2: Net Worth -->
         <div class="card p-4 space-y-3">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <h3 class="font-semibold">$60k Net Worth</h3>
-              <p class="text-xs text-slate-500 mt-0.5">Emergency + buffer target</p>
-            </div>
-            <span class="text-sm font-medium text-emerald-500">33%</span>
-          </div>
+          <div class="flex items-start justify-between gap-2"><div><h3 class="font-semibold">$60k Net Worth</h3><p class="text-xs text-slate-500 mt-0.5">Emergency + buffer target</p></div><span class="text-sm font-medium text-emerald-500">33%</span></div>
           <div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:33%"></div></div>
           <p class="text-xs text-slate-500">~$20,000 / $60,000</p>
-          <div>
-            <p class="text-xs font-medium text-slate-500 mb-1">Notes / sub-steps</p>
-            <textarea data-goal="nw" rows="2" class="goal-notes w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ideas, tasks, reminders..."></textarea>
-          </div>
-          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3">
-            <p class="text-xs font-medium text-slate-500 mb-1">Recommended next steps</p>
-            <ul class="text-xs space-y-1 text-slate-600 dark:text-slate-300">
-              <li>• Finish $10k cash first, then redirect surplus here</li>
-              <li>• Avoid high-risk additions while still building the base</li>
-              <li>• Revisit allocation once cash goal is secure</li>
-            </ul>
-          </div>
+          <div><p class="text-xs font-medium text-slate-500 mb-1">Notes / sub-steps</p><textarea data-goal="nw" rows="2" class="goal-notes w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ideas, tasks, reminders..."></textarea></div>
+          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3"><p class="text-xs font-medium text-slate-500 mb-1">Recommended next steps</p><ul class="text-xs space-y-1 text-slate-600 dark:text-slate-300"><li>• Finish $10k cash first, then redirect surplus here</li><li>• Avoid high-risk additions while still building the base</li><li>• Revisit allocation once cash goal is secure</li></ul></div>
         </div>
 
-        <!-- Goal 3: Homestead -->
         <div class="card p-4 space-y-3">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <h3 class="font-semibold">Homestead / Cabin</h3>
-              <p class="text-xs text-slate-500 mt-0.5">Sandpoint area preferred · longer horizon</p>
-            </div>
-            <span class="text-sm font-medium text-amber-500">Early</span>
-          </div>
+          <div class="flex items-start justify-between gap-2"><div><h3 class="font-semibold">Homestead / Cabin</h3><p class="text-xs text-slate-500 mt-0.5">Sandpoint area preferred · longer horizon</p></div><span class="text-sm font-medium text-amber-500">Early</span></div>
           <div class="progress-bar"><div class="progress-fill bg-amber-500" style="width:5%"></div></div>
-          <div>
-            <p class="text-xs font-medium text-slate-500 mb-1">Notes / sub-steps</p>
-            <textarea data-goal="cabin" rows="2" class="goal-notes w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Land ideas, design notes, research..."></textarea>
-          </div>
-          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3">
-            <p class="text-xs font-medium text-slate-500 mb-1">Recommended next steps</p>
-            <ul class="text-xs space-y-1 text-slate-600 dark:text-slate-300">
-              <li>• Keep this as a vision goal — don’t let it pull cash from the $10k buffer</li>
-              <li>• Occasional research (parcels, costs, snow load) is fine</li>
-              <li>• Revisit seriously after net-worth base is stronger</li>
-            </ul>
-          </div>
+          <div><p class="text-xs font-medium text-slate-500 mb-1">Notes / sub-steps</p><textarea data-goal="cabin" rows="2" class="goal-notes w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Land ideas, design notes, research..."></textarea></div>
+          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3"><p class="text-xs font-medium text-slate-500 mb-1">Recommended next steps</p><ul class="text-xs space-y-1 text-slate-600 dark:text-slate-300"><li>• Keep this as a vision goal — don’t let it pull cash from the $10k buffer</li><li>• Occasional research (parcels, costs, snow load) is fine</li><li>• Revisit seriously after net-worth base is stronger</li></ul></div>
         </div>
-
-        <!-- Goal 4: Remote consultancy -->
-        <div class="card p-4 space-y-3">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <h3 class="font-semibold">Multi-state PE Remote Consultancy</h3>
-              <p class="text-xs text-slate-500 mt-0.5">Long-term leverage play</p>
-            </div>
-            <span class="text-sm font-medium text-slate-500">Vision</span>
-          </div>
-          <div>
-            <p class="text-xs font-medium text-slate-500 mb-1">Notes / sub-steps</p>
-            <textarea data-goal="consult" rows="2" class="goal-notes w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="License steps, client ideas, systems..."></textarea>
-          </div>
-          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3">
-            <p class="text-xs font-medium text-slate-500 mb-1">Recommended next steps</p>
-            <ul class="text-xs space-y-1 text-slate-600 dark:text-slate-300">
-              <li>• Keep Idaho PE registration moving</li>
-              <li>• Quietly productize recurring work (templates, checklists)</li>
-              <li>• Don’t quit the day job until cash + systems are solid</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========== LAB ========== -->
-      <section id="lab" class="section space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Lab</h2>
-          <span class="text-xs text-slate-500">Innovations · experiments · agents</span>
-        </div>
-        <p class="text-sm text-slate-500">Free-form capture for ideas. Categories are optional — just get it down.</p>
-
-        <div id="ideas-list" class="space-y-3"></div>
 
         <div class="card p-4 space-y-3">
-          <h3 class="font-semibold text-sm">Add idea</h3>
-          <input id="idea-title" type="text" placeholder="Title" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-          <textarea id="idea-notes" rows="2" placeholder="Notes, next steps, why it matters..." class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-          <select id="idea-cat" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm">
-            <option value="innovation">Innovation</option>
-            <option value="agent">Agent / Automation</option>
-            <option value="software">Software / Tool</option>
-            <option value="process">Process</option>
-            <option value="other">Other</option>
-          </select>
-          <button id="add-idea" class="w-full py-2.5 bg-indigo-600 active:bg-indigo-700 text-white rounded-xl text-sm font-medium">Add to Lab</button>
+          <div class="flex items-start justify-between gap-2"><div><h3 class="font-semibold">Multi-state PE Remote Consultancy</h3><p class="text-xs text-slate-500 mt-0.5">Long-term leverage play</p></div><span class="text-sm font-medium text-slate-500">Vision</span></div>
+          <div><p class="text-xs font-medium text-slate-500 mb-1">Notes / sub-steps</p><textarea data-goal="consult" rows="2" class="goal-notes w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="License steps, client ideas, systems..."></textarea></div>
+          <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3"><p class="text-xs font-medium text-slate-500 mb-1">Recommended next steps</p><ul class="text-xs space-y-1 text-slate-600 dark:text-slate-300"><li>• Keep Idaho PE registration moving</li><li>• Quietly productize recurring work (templates, checklists)</li><li>• Don’t quit the day job until cash + systems are solid</li></ul></div>
         </div>
 
-        <div class="card p-4 border-l-4 border-l-indigo-500">
-          <h3 class="font-semibold mb-2">Lab Insights</h3>
-          <ul class="text-sm space-y-2 text-slate-600 dark:text-slate-300">
-            <li>• Highest near-term ROI: agents that remove Ajera / timesheet / labeling friction</li>
-            <li>• Capture first, refine later — quantity of ideas beats perfect categorization</li>
-            <li>• When an idea matures, promote it into a real Project or a Goal note</li>
-          </ul>
+        <!-- Innovation Lab inside Goals so nothing is lost -->
+        <div class="pt-2">
+          <h2 class="text-lg font-semibold mb-1">Innovation Lab</h2>
+          <p class="text-sm text-slate-500 mb-3">Free capture for ideas, agents, and experiments.</p>
+          <div id="ideas-list" class="space-y-2 mb-3"></div>
+          <div class="card p-4 space-y-3">
+            <input id="idea-title" type="text" placeholder="Idea title" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <textarea id="idea-notes" rows="2" placeholder="Notes / next steps..." class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+            <button id="add-idea" class="w-full py-2.5 bg-indigo-600 active:bg-indigo-700 text-white rounded-xl text-sm font-medium">Add idea</button>
+          </div>
+          <div class="card p-4 border-l-4 border-l-indigo-500 mt-3">
+            <h3 class="font-semibold mb-2">Lab Insights</h3>
+            <ul class="text-sm space-y-2 text-slate-600 dark:text-slate-300">
+              <li>• Highest near-term ROI: agents that remove Ajera / timesheet / labeling friction</li>
+              <li>• Capture first, refine later</li>
+              <li>• When an idea matures, promote it into a real Project or Goal note</li>
+            </ul>
+          </div>
         </div>
       </section>
     </main>
 
-    <!-- Bottom Tab Bar -->
     <nav class="tab-bar fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800">
       <div class="max-w-3xl mx-auto grid grid-cols-5 gap-1 px-2 py-1.5">
-        <button class="tab-btn active" data-section="overview">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/></svg>
-          <span>Home</span>
-        </button>
-        <button class="tab-btn" data-section="projects">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-          <span>Projects</span>
-        </button>
-        <button class="tab-btn" data-section="finance">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          <span>Finance</span>
-        </button>
-        <button class="tab-btn" data-section="goals">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          <span>Goals</span>
-        </button>
-        <button class="tab-btn" data-section="lab">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-          <span>Lab</span>
-        </button>
+        <button class="tab-btn active" data-section="overview"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/></svg><span>Home</span></button>
+        <button class="tab-btn" data-section="projects"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg><span>Projects</span></button>
+        <button class="tab-btn" data-section="finance"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Finance</span></button>
+        <button class="tab-btn" data-section="news"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg><span>News</span></button>
+        <button class="tab-btn" data-section="goals"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg><span>Goals</span></button>
       </div>
     </nav>
   </div>
@@ -360,10 +280,7 @@
   <script>
     const html = document.documentElement;
     if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) html.classList.add('dark');
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-      html.classList.toggle('dark');
-      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
-    });
+    document.getElementById('theme-toggle').addEventListener('click', () => { html.classList.toggle('dark'); localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light'); });
 
     function updateClock() {
       const now = new Date();
@@ -382,154 +299,68 @@
       });
     });
 
-    // Todos
     const TODO_KEY = 'jp_command_todos';
     let todos = JSON.parse(localStorage.getItem(TODO_KEY) || '[]');
     if (todos.length === 0) {
-      todos = [
-        { id: 1, text: 'Advance Cherry Ridge letter package', done: false },
-        { id: 2, text: 'Civil 3D production block (2–3 hrs)', done: false },
-        { id: 3, text: 'Review Ajera / timesheet friction', done: false },
-        { id: 4, text: '10–15 min evening review', done: false }
-      ];
+      todos = [{ id: 1, text: 'Advance Cherry Ridge letter package', done: false }, { id: 2, text: 'Civil 3D production block (2–3 hrs)', done: false }, { id: 3, text: 'Review Ajera / timesheet friction', done: false }, { id: 4, text: '10–15 min evening review', done: false }];
       localStorage.setItem(TODO_KEY, JSON.stringify(todos));
     }
     function renderTodos() {
-      document.getElementById('todo-list').innerHTML = todos.map(t => `
-        <li class="todo-item flex items-center gap-3 p-2 rounded-lg ${t.done ? 'completed' : ''}">
-          <input type="checkbox" ${t.done ? 'checked' : ''} class="w-4 h-4 rounded text-indigo-600" onchange="toggleTodo(${t.id})" />
-          <span class="flex-1 text-sm">${t.text}</span>
-          <button onclick="deleteTodo(${t.id})" class="text-slate-400 text-xs px-1">✕</button>
-        </li>`).join('');
+      document.getElementById('todo-list').innerHTML = todos.map(t => `<li class="todo-item flex items-center gap-3 p-2 rounded-lg ${t.done ? 'completed' : ''}"><input type="checkbox" ${t.done ? 'checked' : ''} class="w-4 h-4 rounded text-indigo-600" onchange="toggleTodo(${t.id})" /><span class="flex-1 text-sm">${t.text}</span><button onclick="deleteTodo(${t.id})" class="text-slate-400 text-xs px-1">✕</button></li>`).join('');
     }
     window.toggleTodo = id => { todos = todos.map(t => t.id === id ? {...t, done: !t.done} : t); localStorage.setItem(TODO_KEY, JSON.stringify(todos)); renderTodos(); };
     window.deleteTodo = id => { todos = todos.filter(t => t.id !== id); localStorage.setItem(TODO_KEY, JSON.stringify(todos)); renderTodos(); };
     document.getElementById('add-todo').addEventListener('click', () => {
-      const input = document.getElementById('todo-input');
-      const text = input.value.trim(); if (!text) return;
-      todos.push({ id: Date.now(), text, done: false });
-      localStorage.setItem(TODO_KEY, JSON.stringify(todos));
-      input.value = ''; renderTodos();
+      const input = document.getElementById('todo-input'); const text = input.value.trim(); if (!text) return;
+      todos.push({ id: Date.now(), text, done: false }); localStorage.setItem(TODO_KEY, JSON.stringify(todos)); input.value = ''; renderTodos();
     });
     document.getElementById('todo-input').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('add-todo').click(); });
     renderTodos();
 
-    // Goal notes (persist)
     const NOTES_KEY = 'jp_goal_notes';
     let goalNotes = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
     document.querySelectorAll('.goal-notes').forEach(el => {
       const key = el.dataset.goal;
       if (goalNotes[key]) el.value = goalNotes[key];
-      el.addEventListener('input', () => {
-        goalNotes[key] = el.value;
-        localStorage.setItem(NOTES_KEY, JSON.stringify(goalNotes));
-      });
+      el.addEventListener('input', () => { goalNotes[key] = el.value; localStorage.setItem(NOTES_KEY, JSON.stringify(goalNotes)); });
     });
 
-    // Projects — updated from screenshots
-    const PROJECT_KEY = 'jp_command_projects';
-    let projects = [
+    const PROJECT_KEY = 'jp_command_projects_v3';
+    let projects = JSON.parse(localStorage.getItem(PROJECT_KEY) || 'null') || [
       { id: 'cherry', name: 'Cherry Ridge Septic', location: 'Emmett, ID', pct: 100, done: true, notes: 'Drainfield + engineering letter · near complete' },
       { id: 'faith', name: 'Faith Landing Pump Station', location: 'Canyon Village', pct: 82, done: false, notes: 'Design + ISPWC/ACHD coordination' },
       { id: 'meridian', name: 'Meridian Commercial / ADA', location: 'Meridian', pct: 100, done: true, notes: 'Vehicle tracking, gutters, hydrants' },
       { id: 'turquoise', name: 'Turquoise Ridge (TX)', location: 'Wise County', pct: 69, done: false, notes: 'Plats / drainage wrap-up' }
     ];
-    // Keep user overrides if they existed, but seed with screenshot values on first load of this version
-    const saved = JSON.parse(localStorage.getItem(PROJECT_KEY) || 'null');
-    if (!saved || !saved._v2) {
-      projects._v2 = true;
-      localStorage.setItem(PROJECT_KEY, JSON.stringify(projects));
-    } else {
-      projects = saved;
-    }
-
     function saveProjects() { localStorage.setItem(PROJECT_KEY, JSON.stringify(projects)); renderProjects(); renderPulse(); }
     function renderPulse() {
-      document.getElementById('project-pulse').innerHTML = projects.map(p => `
-        <div class="${p.done ? 'opacity-50' : ''}">
-          <div class="flex justify-between text-sm mb-1"><span class="font-medium">${p.name}</span><span class="text-slate-500">${p.done ? 'Done' : p.pct + '%'}</span></div>
-          <div class="progress-bar"><div class="progress-fill ${p.done ? 'bg-slate-400' : 'bg-indigo-500'}" style="width:${p.pct}%"></div></div>
-        </div>`).join('');
+      document.getElementById('project-pulse').innerHTML = projects.map(p => `<div class="${p.done ? 'opacity-50' : ''}"><div class="flex justify-between text-sm mb-1"><span class="font-medium">${p.name}</span><span class="text-slate-500">${p.done ? 'Done' : p.pct + '%'}</span></div><div class="progress-bar"><div class="progress-fill ${p.done ? 'bg-slate-400' : 'bg-indigo-500'}" style="width:${p.pct}%"></div></div></div>`).join('');
     }
     function renderProjects() {
-      document.getElementById('projects-list').innerHTML = projects.map(p => `
-        <div class="card p-4 ${p.done ? 'opacity-60' : ''}">
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-semibold truncate">${p.name}</h3>
-                ${p.done ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Complete</span>' : ''}
-              </div>
-              <p class="text-xs text-slate-500 mt-0.5">${p.location}</p>
-              <p class="text-xs text-slate-500 mt-1">${p.notes}</p>
-            </div>
-            <label class="flex items-center gap-1.5 text-xs shrink-0">
-              <input type="checkbox" ${p.done ? 'checked' : ''} onchange="toggleProjectDone('${p.id}')" class="w-4 h-4 rounded text-indigo-600" /> Done
-            </label>
-          </div>
-          <div class="mt-3">
-            <div class="flex justify-between text-xs mb-1"><span>Progress</span><span id="pct-${p.id}">${p.pct}%</span></div>
-            <input type="range" min="0" max="100" value="${p.pct}" oninput="updateProjectPct('${p.id}', this.value)" />
-          </div>
-        </div>`).join('');
+      document.getElementById('projects-list').innerHTML = projects.map(p => `<div class="card p-4 ${p.done ? 'opacity-60' : ''}"><div class="flex items-start justify-between gap-3"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><h3 class="font-semibold truncate">${p.name}</h3>${p.done ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Complete</span>' : ''}</div><p class="text-xs text-slate-500 mt-0.5">${p.location}</p><p class="text-xs text-slate-500 mt-1">${p.notes}</p></div><label class="flex items-center gap-1.5 text-xs shrink-0"><input type="checkbox" ${p.done ? 'checked' : ''} onchange="toggleProjectDone('${p.id}')" class="w-4 h-4 rounded text-indigo-600" /> Done</label></div><div class="mt-3"><div class="flex justify-between text-xs mb-1"><span>Progress</span><span id="pct-${p.id}">${p.pct}%</span></div><input type="range" min="0" max="100" value="${p.pct}" oninput="updateProjectPct('${p.id}', this.value)" /></div></div>`).join('');
     }
-    window.toggleProjectDone = id => {
-      projects = projects.map(p => p.id === id ? {...p, done: !p.done, pct: !p.done ? 100 : p.pct} : p);
-      saveProjects();
-    };
-    window.updateProjectPct = (id, val) => {
-      const pct = parseInt(val, 10);
-      projects = projects.map(p => p.id === id ? {...p, pct, done: pct === 100} : p);
-      document.getElementById('pct-' + id).textContent = pct + '%';
-      localStorage.setItem(PROJECT_KEY, JSON.stringify(projects));
-      renderPulse();
-    };
+    window.toggleProjectDone = id => { projects = projects.map(p => p.id === id ? {...p, done: !p.done, pct: !p.done ? 100 : p.pct} : p); saveProjects(); };
+    window.updateProjectPct = (id, val) => { const pct = parseInt(val, 10); projects = projects.map(p => p.id === id ? {...p, pct, done: pct === 100} : p); document.getElementById('pct-' + id).textContent = pct + '%'; localStorage.setItem(PROJECT_KEY, JSON.stringify(projects)); renderPulse(); };
     renderProjects(); renderPulse();
 
-    // Lab Ideas
     const IDEA_KEY = 'jp_command_ideas';
     let ideas = JSON.parse(localStorage.getItem(IDEA_KEY) || 'null') || [
-      { id: 1, title: 'Ajera timesheet + invoice agent', notes: 'Cut the daily friction on legacy PM software', cat: 'agent', ts: Date.now() },
-      { id: 2, title: 'Civil 3D Dynamo labeling pack', notes: 'Standardize multileaders, pipe labels, match lines', cat: 'software', ts: Date.now() },
-      { id: 3, title: 'Personal AI taste recommender', notes: 'Pull from Pinterest / Spotify / Marketplace likes', cat: 'innovation', ts: Date.now() },
-      { id: 4, title: 'Quiet process improvements at KM', notes: 'Templates + workflows before evangelizing', cat: 'process', ts: Date.now() },
-      { id: 5, title: 'Multi-state PE remote consultancy', notes: 'Scale side work into autonomous firm', cat: 'innovation', ts: Date.now() }
+      { id: 1, title: 'Ajera timesheet + invoice agent', notes: 'Cut the daily friction on legacy PM software', ts: Date.now() },
+      { id: 2, title: 'Civil 3D Dynamo labeling pack', notes: 'Standardize multileaders, pipe labels, match lines', ts: Date.now() },
+      { id: 3, title: 'Personal AI taste recommender', notes: 'Pull from Pinterest / Spotify / Marketplace likes', ts: Date.now() },
+      { id: 4, title: 'Quiet process improvements at KM', notes: 'Templates + workflows before evangelizing', ts: Date.now() },
+      { id: 5, title: 'Multi-state PE remote consultancy', notes: 'Scale side work into autonomous firm', ts: Date.now() }
     ];
     function saveIdeas() { localStorage.setItem(IDEA_KEY, JSON.stringify(ideas)); renderIdeas(); }
     function renderIdeas() {
-      document.getElementById('ideas-list').innerHTML = ideas.length ? ideas.map(i => `
-        <div class="idea-card">
-          <div class="flex items-start justify-between gap-2">
-            <div class="flex-1 min-w-0">
-              <p class="font-medium text-sm">${i.title}</p>
-              ${i.notes ? `<p class="text-xs text-slate-500 mt-1">${i.notes}</p>` : ''}
-              <div class="mt-2 flex items-center gap-2">
-                <select onchange="changeIdeaCat(${i.id}, this.value)" class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 border-0">
-                  <option value="innovation" ${i.cat==='innovation'?'selected':''}>Innovation</option>
-                  <option value="agent" ${i.cat==='agent'?'selected':''}>Agent</option>
-                  <option value="software" ${i.cat==='software'?'selected':''}>Software</option>
-                  <option value="process" ${i.cat==='process'?'selected':''}>Process</option>
-                  <option value="other" ${i.cat==='other'?'selected':''}>Other</option>
-                </select>
-              </div>
-            </div>
-            <button onclick="deleteIdea(${i.id})" class="text-slate-400 text-xs px-1">✕</button>
-          </div>
-        </div>`).join('') : '<p class="text-sm text-slate-500 py-4 text-center">No ideas yet — add one below.</p>';
+      document.getElementById('ideas-list').innerHTML = ideas.length ? ideas.map(i => `<div class="idea-card"><div class="flex items-start justify-between gap-2"><div class="flex-1 min-w-0"><p class="font-medium text-sm">${i.title}</p>${i.notes ? `<p class="text-xs text-slate-500 mt-1">${i.notes}</p>` : ''}</div><button onclick="deleteIdea(${i.id})" class="text-slate-400 text-xs px-1">✕</button></div></div>`).join('') : '<p class="text-sm text-slate-500 py-2">No ideas yet.</p>';
     }
     window.deleteIdea = id => { ideas = ideas.filter(i => i.id !== id); saveIdeas(); };
-    window.changeIdeaCat = (id, cat) => {
-      ideas = ideas.map(i => i.id === id ? {...i, cat} : i);
-      saveIdeas();
-    };
     document.getElementById('add-idea').addEventListener('click', () => {
-      const title = document.getElementById('idea-title').value.trim();
-      if (!title) return;
+      const title = document.getElementById('idea-title').value.trim(); if (!title) return;
       const notes = document.getElementById('idea-notes').value.trim();
-      const cat = document.getElementById('idea-cat').value;
-      ideas.unshift({ id: Date.now(), title, notes, cat, ts: Date.now() });
-      document.getElementById('idea-title').value = '';
-      document.getElementById('idea-notes').value = '';
+      ideas.unshift({ id: Date.now(), title, notes, ts: Date.now() });
+      document.getElementById('idea-title').value = ''; document.getElementById('idea-notes').value = '';
       saveIdeas();
     });
     renderIdeas();
