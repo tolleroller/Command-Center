@@ -370,23 +370,32 @@
   </div>
 
   <script>
-    const html = document.documentElement;
-    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) html.classList.add('dark');
-    document.getElementById('theme-toggle').addEventListener('click', () => { html.classList.toggle('dark'); localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light'); });
+    const htmlEl = document.documentElement;
+    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      htmlEl.classList.add('dark');
+    }
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      htmlEl.classList.toggle('dark');
+      localStorage.setItem('theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+    });
 
     function updateClock() {
       const now = new Date();
-      document.getElementById('clock').textContent = now.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Boise' });
-      document.getElementById('today-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+      const clock = document.getElementById('clock');
+      const today = document.getElementById('today-date');
+      if (clock) clock.textContent = now.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Boise' });
+      if (today) today.textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
     }
-    updateClock(); setInterval(updateClock, 30000);
+    updateClock();
+    setInterval(updateClock, 30000);
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById(btn.dataset.section).classList.add('active');
+        const sec = document.getElementById(btn.dataset.section);
+        if (sec) sec.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     });
@@ -395,19 +404,34 @@
     const TODO_KEY = 'jp_command_todos';
     let todos = JSON.parse(localStorage.getItem(TODO_KEY) || '[]');
     if (!todos.length) {
-      todos = [{ id: 1, text: 'Advance Cherry Ridge letter package', done: false }, { id: 2, text: 'Civil 3D production block (2–3 hrs)', done: false }, { id: 3, text: 'Review Ajera / timesheet friction', done: false }, { id: 4, text: '10–15 min evening review', done: false }];
+      todos = [
+        { id: 1, text: 'Advance Cherry Ridge letter package', done: false },
+        { id: 2, text: 'Civil 3D production block (2–3 hrs)', done: false },
+        { id: 3, text: 'Review Ajera / timesheet friction', done: false },
+        { id: 4, text: '10–15 min evening review', done: false }
+      ];
       localStorage.setItem(TODO_KEY, JSON.stringify(todos));
     }
     function renderTodos() {
-      document.getElementById('todo-list').innerHTML = todos.map(t => `<li class="todo-item flex items-center gap-3 p-2 rounded-lg ${t.done ? 'completed' : ''}"><input type="checkbox" ${t.done ? 'checked' : ''} class="w-4 h-4 rounded text-indigo-600" onchange="toggleTodo(${t.id})" /><span class="flex-1 text-sm">${t.text}</span><button onclick="deleteTodo(${t.id})" class="text-slate-400 text-xs px-1">✕</button></li>`).join('');
+      const el = document.getElementById('todo-list');
+      if (!el) return;
+      el.innerHTML = todos.map(t => `<li class="todo-item flex items-center gap-3 p-2 rounded-lg ${t.done ? 'completed' : ''}"><input type="checkbox" ${t.done ? 'checked' : ''} class="w-4 h-4 rounded text-indigo-600" onchange="toggleTodo(${t.id})" /><span class="flex-1 text-sm">${t.text}</span><button onclick="deleteTodo(${t.id})" class="text-slate-400 text-xs px-1">✕</button></li>`).join('');
     }
     window.toggleTodo = id => { todos = todos.map(t => t.id === id ? {...t, done: !t.done} : t); localStorage.setItem(TODO_KEY, JSON.stringify(todos)); renderTodos(); };
     window.deleteTodo = id => { todos = todos.filter(t => t.id !== id); localStorage.setItem(TODO_KEY, JSON.stringify(todos)); renderTodos(); };
-    document.getElementById('add-todo').addEventListener('click', () => {
-      const input = document.getElementById('todo-input'); const text = input.value.trim(); if (!text) return;
-      todos.push({ id: Date.now(), text, done: false }); localStorage.setItem(TODO_KEY, JSON.stringify(todos)); input.value = ''; renderTodos();
-    });
-    document.getElementById('todo-input').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('add-todo').click(); });
+    const addTodoBtn = document.getElementById('add-todo');
+    if (addTodoBtn) {
+      addTodoBtn.addEventListener('click', () => {
+        const input = document.getElementById('todo-input');
+        const text = input.value.trim(); if (!text) return;
+        todos.push({ id: Date.now(), text, done: false });
+        localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+        input.value = '';
+        renderTodos();
+      });
+    }
+    const todoInput = document.getElementById('todo-input');
+    if (todoInput) todoInput.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('add-todo').click(); });
     renderTodos();
 
     // Goal bullets
@@ -415,7 +439,7 @@
     let goalBullets = JSON.parse(localStorage.getItem(GOAL_BULLETS_KEY) || '{}');
     function saveGoalBullets() { localStorage.setItem(GOAL_BULLETS_KEY, JSON.stringify(goalBullets)); }
     function renderGoalBullets(key) {
-      const list = document.querySelector(`.goal-bullets[data-key="${key}"]`);
+      const list = document.querySelector('.goal-bullets[data-key="' + key + '"]');
       if (!list) return;
       const items = goalBullets[key] || [];
       list.innerHTML = items.map((txt, idx) => `<li class="bullet-item"><span class="flex-1">${txt}</span><button onclick="deleteGoalBullet('${key}',${idx})" class="text-slate-400 text-xs">✕</button></li>`).join('');
@@ -424,14 +448,22 @@
     document.querySelectorAll('.goal-bullet-add').forEach(btn => {
       btn.addEventListener('click', () => {
         const key = btn.dataset.key;
-        const input = document.querySelector(`.goal-bullet-input[data-key="${key}"]`);
+        const input = document.querySelector('.goal-bullet-input[data-key="' + key + '"]');
         const text = input.value.trim(); if (!text) return;
         if (!goalBullets[key]) goalBullets[key] = [];
-        goalBullets[key].push(text); saveGoalBullets(); input.value = ''; renderGoalBullets(key);
+        goalBullets[key].push(text);
+        saveGoalBullets();
+        input.value = '';
+        renderGoalBullets(key);
       });
     });
     document.querySelectorAll('.goal-bullet-input').forEach(input => {
-      input.addEventListener('keydown', e => { if (e.key === 'Enter') document.querySelector(`.goal-bullet-add[data-key="${input.dataset.key}"]`).click(); });
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          const btn = document.querySelector('.goal-bullet-add[data-key="' + input.dataset.key + '"]');
+          if (btn) btn.click();
+        }
+      });
     });
     ['cash','nw','cabin','consult'].forEach(renderGoalBullets);
 
@@ -445,16 +477,28 @@
     ];
     function saveProjects() { localStorage.setItem(PROJECT_KEY, JSON.stringify(projects)); renderProjects(); renderPulse(); }
     function renderPulse() {
-      document.getElementById('project-pulse').innerHTML = projects.map(p => `<div class="${p.done ? 'opacity-50' : ''}"><div class="flex justify-between text-sm mb-1"><span class="font-medium">${p.name}</span><span class="text-slate-500">${p.done ? 'Done' : p.pct + '%'}</span></div><div class="progress-bar"><div class="progress-fill ${p.done ? 'bg-slate-400' : 'bg-indigo-500'}" style="width:${p.pct}%"></div></div></div>`).join('');
+      const el = document.getElementById('project-pulse');
+      if (!el) return;
+      el.innerHTML = projects.map(p => `<div class="${p.done ? 'opacity-50' : ''}"><div class="flex justify-between text-sm mb-1"><span class="font-medium">${p.name}</span><span class="text-slate-500">${p.done ? 'Done' : p.pct + '%'}</span></div><div class="progress-bar"><div class="progress-fill ${p.done ? 'bg-slate-400' : 'bg-indigo-500'}" style="width:${p.pct}%"></div></div></div>`).join('');
     }
     function renderProjects() {
-      document.getElementById('projects-list').innerHTML = projects.map(p => `<div class="card p-4 ${p.done ? 'opacity-60' : ''}"><div class="flex items-start justify-between gap-3"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><h3 class="font-semibold truncate">${p.name}</h3>${p.done ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Complete</span>' : ''}</div><p class="text-xs text-slate-500 mt-0.5">${p.location}</p><p class="text-xs text-slate-500 mt-1">${p.notes}</p></div><label class="flex items-center gap-1.5 text-xs shrink-0"><input type="checkbox" ${p.done ? 'checked' : ''} onchange="toggleProjectDone('${p.id}')" class="w-4 h-4 rounded text-indigo-600" /> Done</label></div><div class="mt-3"><div class="flex justify-between text-xs mb-1"><span>Progress</span><span id="pct-${p.id}">${p.pct}%</span></div><input type="range" min="0" max="100" value="${p.pct}" oninput="updateProjectPct('${p.id}', this.value)" /></div></div>`).join('');
+      const el = document.getElementById('projects-list');
+      if (!el) return;
+      el.innerHTML = projects.map(p => `<div class="card p-4 ${p.done ? 'opacity-60' : ''}"><div class="flex items-start justify-between gap-3"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><h3 class="font-semibold truncate">${p.name}</h3>${p.done ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Complete</span>' : ''}</div><p class="text-xs text-slate-500 mt-0.5">${p.location}</p><p class="text-xs text-slate-500 mt-1">${p.notes}</p></div><label class="flex items-center gap-1.5 text-xs shrink-0"><input type="checkbox" ${p.done ? 'checked' : ''} onchange="toggleProjectDone('${p.id}')" class="w-4 h-4 rounded text-indigo-600" /> Done</label></div><div class="mt-3"><div class="flex justify-between text-xs mb-1"><span>Progress</span><span id="pct-${p.id}">${p.pct}%</span></div><input type="range" min="0" max="100" value="${p.pct}" oninput="updateProjectPct('${p.id}', this.value)" /></div></div>`).join('');
     }
     window.toggleProjectDone = id => { projects = projects.map(p => p.id === id ? {...p, done: !p.done, pct: !p.done ? 100 : p.pct} : p); saveProjects(); };
-    window.updateProjectPct = (id, val) => { const pct = parseInt(val, 10); projects = projects.map(p => p.id === id ? {...p, pct, done: pct === 100} : p); document.getElementById('pct-' + id).textContent = pct + '%'; localStorage.setItem(PROJECT_KEY, JSON.stringify(projects)); renderPulse(); };
-    renderProjects(); renderPulse();
+    window.updateProjectPct = (id, val) => {
+      const pct = parseInt(val, 10);
+      projects = projects.map(p => p.id === id ? {...p, pct, done: pct === 100} : p);
+      const label = document.getElementById('pct-' + id);
+      if (label) label.textContent = pct + '%';
+      localStorage.setItem(PROJECT_KEY, JSON.stringify(projects));
+      renderPulse();
+    };
+    renderProjects();
+    renderPulse();
 
-    // Lab ideas with bullets
+    // Lab ideas (rich)
     const IDEA_KEY = 'jp_lab_ideas_v3';
     let ideas = JSON.parse(localStorage.getItem(IDEA_KEY) || 'null');
     if (!ideas) {
@@ -462,60 +506,60 @@
         {
           id: 1,
           title: 'Ajera timesheet + invoice agent',
-          vision: 'Turn the daily Ajera grind into a 2–3 minute guided flow. Capture time by voice or quick picks, auto-draft invoices from the same data, and surface only the exceptions that need your eyes. This is the highest-frequency pain at KM and the fastest place to prove “agent > meeting.”',
-          synergies: 'Pairs directly with Quiet process improvements and Dynamo packs. Every hour saved is proof you can productize workflow for future consultancy clients. Also trains you on the same agent patterns you will reuse for personal systems.',
+          vision: 'Turn the daily Ajera grind into a 2–3 minute guided flow. Capture time by voice or quick picks, auto-draft invoices from the same data, and surface only the exceptions that need your eyes. Highest-frequency pain at KM and the fastest place to prove agent > meeting.',
+          synergies: 'Pairs with Quiet process improvements and Dynamo packs. Hours saved become proof you can productize workflow for future consultancy clients. Same agent patterns transfer to personal systems.',
           options: [
             'Weekend MVP: one voice/text → timesheet draft for a single project type',
-            'Mid path: timesheet + simple invoice PDF export for 2–3 common fee types',
-            'Full vision: full exception-only inbox that sits on top of Ajera without replacing it'
+            'Mid path: timesheet + simple invoice PDF for 2–3 common fee types',
+            'Full vision: exception-only inbox on top of Ajera without replacing it'
           ],
           bullets: ['Map the 3 most repeated Ajera clicks this week', 'Prototype one timesheet helper with Grok']
         },
         {
           id: 2,
           title: 'Civil 3D Dynamo labeling pack',
-          vision: 'A small, opinionated Dynamo/script pack that makes labels, multileaders, pipe tags, and match lines consistent and fast. Not a full automation suite — just the 5–8 actions you repeat on almost every sheet set. Becomes both a personal speed tool and a future deliverable for other PEs.',
-          synergies: 'Feeds Quiet process improvements at KM and becomes a concrete “here is how I ship faster” example for the multi-state consultancy. Also a clean weekend-project shape: one labeling problem at a time.',
+          vision: 'A small opinionated Dynamo pack for labels, multileaders, pipe tags, and match lines. Not a full suite — just the 5–8 actions you repeat on almost every sheet set. Personal speed tool and future deliverable for other PEs.',
+          synergies: 'Feeds Quiet process improvements at KM and becomes a concrete “I ship faster” example for the multi-state consultancy. Clean weekend-project shape.',
           options: [
             'Weekend: one Dynamo graph for pipe labels + multileader style',
             'Next: add match-line and structure tags; document as a mini pack',
-            'Later: package + light instructions so another engineer can run it'
+            'Later: package so another engineer can run it'
           ],
           bullets: ['List the 5 labels you recreate most often', 'Start with multileaders + pipes only']
         },
         {
           id: 3,
           title: 'Personal AI taste recommender',
-          vision: 'A lightweight agent that learns from what you already save and like (Pinterest, Spotify, Marketplace, etc.) and surfaces better next choices without you hunting. Practice ground for preference memory and agentic retrieval — the same muscles needed for work agents, just lower stakes.',
-          synergies: 'Low-risk training ground for the same patterns used in Ajera/Dynamo agents. Keeps the “build agents that stick in daily life” habit alive outside of work pressure.',
+          vision: 'Lightweight agent that learns from what you already save and like and surfaces better next choices. Practice ground for preference memory and agentic retrieval — same muscles as work agents, lower stakes.',
+          synergies: 'Low-risk training for patterns used in Ajera/Dynamo agents. Keeps the build-agents-that-stick habit alive outside work pressure.',
           options: [
-            'Weekend: export one source (e.g. recent Spotify or Pinterest) and get 10 ranked suggestions',
-            'Next: simple recurring “what should I look at this weekend” prompt',
-            'Later: multi-source taste profile that compounds over months'
+            'Weekend: export one source and get 10 ranked suggestions',
+            'Next: recurring “what should I look at this weekend” prompt',
+            'Later: multi-source taste profile that compounds'
           ],
           bullets: ['Pick one source to export this weekend']
         },
         {
           id: 4,
           title: 'Quiet process improvements at KM',
-          vision: 'Ship small, undeniable improvements (templates, checklists, sheet standards, naming) before talking about bigger AI ideas. Build credibility through output so that when you later show an agent or Dynamo pack, the firm already trusts the results.',
-          synergies: 'Creates the political and practical space for Ajera and Dynamo work to land. Also generates reusable artifacts you can later offer under Salient Land Solutions.',
+          vision: 'Ship small undeniable improvements (templates, checklists, sheet standards) before talking about bigger AI ideas. Credibility through output so later agents and Dynamo packs land on trust.',
+          synergies: 'Creates space for Ajera and Dynamo work to land. Generates reusable artifacts for Salient Land Solutions later.',
           options: [
-            'This month: one high-visibility template or checklist that removes a repeated pain',
-            'Next: a short “how we do X here” note that juniors actually use',
-            'Later: a small internal library that becomes part of your personal brand'
+            'This month: one high-visibility template that removes repeated pain',
+            'Next: a short “how we do X here” note juniors actually use',
+            'Later: small internal library that becomes part of your brand'
           ],
           bullets: ['Identify one repeated friction this week', 'Ship the fix before mentioning AI']
         },
         {
           id: 5,
           title: 'Multi-state PE remote consultancy',
-          vision: 'Long-arc goal: Salient Land Solutions (or successor) as a lean, remote, multi-state PE practice that sells judgment + productized delivery instead of pure hours. The tools you build now (agents, Dynamo packs, standards) become both your leverage and eventual offerings. Financial and schedule autonomy is the point.',
-          synergies: 'Every automation and process win is both KM value and future product. Idaho PE registration + Texas foundation + productized workflows = the platform. Command Center itself is practice for the operating system of that firm.',
+          vision: 'Long-arc goal: lean remote multi-state PE practice that sells judgment + productized delivery. Tools you build now become leverage and eventual offerings. Financial and schedule autonomy is the point.',
+          synergies: 'Every automation and process win is both KM value and future product. Idaho PE + Texas foundation + productized workflows = the platform. Command Center is practice for that operating system.',
           options: [
-            'Near term: stay excellent at KM while collecting PE licenses and side artifacts',
-            'Mid: selective remote/overflow work under your DBA using your own tools',
-            'Long: small autonomous practice with juniors/drafting support and agent-assisted delivery'
+            'Near term: excel at KM while collecting PE licenses and side artifacts',
+            'Mid: selective remote/overflow work under your DBA using your tools',
+            'Long: small autonomous practice with agent-assisted delivery'
           ],
           bullets: ['Track Idaho PE status monthly', 'Note which deliverables repeat across clients']
         }
@@ -524,7 +568,9 @@
     }
     function saveIdeas() { localStorage.setItem(IDEA_KEY, JSON.stringify(ideas)); renderIdeas(); }
     function renderIdeas() {
-      document.getElementById('ideas-list').innerHTML = ideas.length ? ideas.map(i => `
+      const el = document.getElementById('ideas-list');
+      if (!el) return;
+      el.innerHTML = ideas.length ? ideas.map(i => `
         <div class="card p-5 space-y-4">
           <div class="flex items-start justify-between gap-3">
             <h3 class="font-semibold text-base leading-snug flex-1">${i.title}</h3>
@@ -547,59 +593,32 @@
     }
     window.deleteIdea = id => { ideas = ideas.filter(i => i.id !== id); saveIdeas(); };
     window.deleteIdeaBullet = (id, idx) => {
-      ideas = ideas.map(i => { if (i.id === id) { const b = [...(i.bullets||[])]; b.splice(idx,1); return {...i, bullets: b}; } return i; });
+      ideas = ideas.map(i => {
+        if (i.id === id) { const b = [...(i.bullets || [])]; b.splice(idx, 1); return {...i, bullets: b}; }
+        return i;
+      });
       saveIdeas();
     };
     window.addIdeaBullet = id => {
       const input = document.getElementById('bullet-input-' + id);
+      if (!input) return;
       const text = input.value.trim(); if (!text) return;
-      ideas = ideas.map(i => i.id === id ? {...i, bullets: [...(i.bullets||[]), text]} : i);
+      ideas = ideas.map(i => i.id === id ? {...i, bullets: [...(i.bullets || []), text]} : i);
       saveIdeas();
     };
-    document.getElementById('add-idea').addEventListener('click', () => {
-      const title = document.getElementById('idea-title').value.trim(); if (!title) return;
-      const first = document.getElementById('idea-first-bullet').value.trim();
-      ideas.unshift({ id: Date.now(), title, vision: '', synergies: '', options: [], bullets: first ? [first] : [] });
-      document.getElementById('idea-title').value = '';
-      document.getElementById('idea-first-bullet').value = '';
-      saveIdeas();
-    });
-    renderIdeas(); }
-    function renderIdeas() {
-      document.getElementById('ideas-list').innerHTML = ideas.length ? ideas.map(i => `
-        <div class="idea-card">
-          <div class="flex items-start justify-between gap-2 mb-2">
-            <p class="font-medium text-sm flex-1">${i.title}</p>
-            <button onclick="deleteIdea(${i.id})" class="text-slate-400 text-xs px-1">✕</button>
-          </div>
-          <ul class="space-y-1 mb-2">
-            ${(i.bullets || []).map((b, idx) => `<li class="bullet-item"><span class="flex-1 text-sm text-slate-600 dark:text-slate-300">${b}</span><button onclick="deleteIdeaBullet(${i.id},${idx})" class="text-slate-400 text-xs">✕</button></li>`).join('')}
-          </ul>
-          <div class="flex gap-2">
-            <input type="text" id="bullet-input-${i.id}" placeholder="Add next step..." class="flex-1 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm" />
-            <button onclick="addIdeaBullet(${i.id})" class="px-3 py-2 bg-indigo-600 text-white rounded-xl text-sm">Add</button>
-          </div>
-        </div>`).join('') : '<p class="text-sm text-slate-500 py-2">No ideas yet.</p>';
+    const addIdeaBtn = document.getElementById('add-idea');
+    if (addIdeaBtn) {
+      addIdeaBtn.addEventListener('click', () => {
+        const titleEl = document.getElementById('idea-title');
+        const firstEl = document.getElementById('idea-first-bullet');
+        const title = titleEl.value.trim(); if (!title) return;
+        const first = firstEl ? firstEl.value.trim() : '';
+        ideas.unshift({ id: Date.now(), title, vision: '', synergies: '', options: [], bullets: first ? [first] : [] });
+        titleEl.value = '';
+        if (firstEl) firstEl.value = '';
+        saveIdeas();
+      });
     }
-    window.deleteIdea = id => { ideas = ideas.filter(i => i.id !== id); saveIdeas(); };
-    window.deleteIdeaBullet = (id, idx) => {
-      ideas = ideas.map(i => { if (i.id === id) { const b = [...(i.bullets||[])]; b.splice(idx,1); return {...i, bullets: b}; } return i; });
-      saveIdeas();
-    };
-    window.addIdeaBullet = id => {
-      const input = document.getElementById('bullet-input-' + id);
-      const text = input.value.trim(); if (!text) return;
-      ideas = ideas.map(i => i.id === id ? {...i, bullets: [...(i.bullets||[]), text]} : i);
-      saveIdeas();
-    };
-    document.getElementById('add-idea').addEventListener('click', () => {
-      const title = document.getElementById('idea-title').value.trim(); if (!title) return;
-      const first = document.getElementById('idea-first-bullet').value.trim();
-      ideas.unshift({ id: Date.now(), title, bullets: first ? [first] : [] });
-      document.getElementById('idea-title').value = '';
-      document.getElementById('idea-first-bullet').value = '';
-      saveIdeas();
-    });
     renderIdeas();
   </script>
 </body>
