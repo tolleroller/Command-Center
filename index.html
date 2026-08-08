@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Command Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: { 850: '#1a2332', 925: '#0b1120' }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .card { @apply bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/50 rounded-2xl; }
+    .nav-item { @apply flex flex-col items-center justify-center gap-0.5 py-2 px-1 text-[10px] font-medium transition-colors; }
+    .nav-item.active { @apply text-indigo-600 dark:text-indigo-400; }
+    .nav-item:not(.active) { @apply text-slate-500 dark:text-slate-400; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .progress-bar { @apply h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden; }
+    .progress-fill { @apply h-full rounded-full transition-all duration-700; }
+    ::-webkit-scrollbar { width: 0; height: 0; }
+  </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-925 text-slate-900 dark:text-slate-100">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 py-3">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md">JP</div>
+        <div>
+          <h1 class="text-[15px] font-semibold leading-tight">Command Center</h1>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400" id="clock"></p>
+        </div>
+      </div>
+      <button id="theme-toggle" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+        <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="pb-24 px-4 pt-4 max-w-lg mx-auto">
+
+    <!-- ========== OVERVIEW ========== -->
+    <section id="overview" class="section active space-y-4">
+      <!-- KPI Grid -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="card p-4">
+          <p class="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Monthly Savings</p>
+          <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">~$4k</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">~50% rate</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Active Projects</p>
+          <p class="text-2xl font-bold mt-1">4</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">2 ID + residual TX</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-[11px] font-medium text-slate-500 uppercase tracking-wide">TSLA</p>
+          <p class="text-2xl font-bold mt-1">$328.58</p>
+          <p class="text-[11px] text-emerald-600 mt-0.5">+2.83%</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Focus</p>
+          <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400 mt-1">Quiet Wins</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Deliver first</p>
+        </div>
+      </div>
+
+      <!-- Today's Focus -->
+      <div class="card p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="font-semibold text-[15px]">Today’s Focus</h2>
+          <span class="text-[11px] text-slate-500" id="today-date"></span>
+        </div>
+        <ul id="todo-list" class="space-y-2.5"></ul>
+        <div class="mt-3 flex gap-2">
+          <input id="todo-input" type="text" placeholder="Add focus item..." class="flex-1 text-sm px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <button id="add-todo" class="px-4 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl">Add</button>
+        </div>
+      </div>
+
+      <!-- Project Pulse -->
+      <div class="card p-4">
+        <h2 class="font-semibold text-[15px] mb-3">Project Pulse</h2>
+        <div class="space-y-4">
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="font-medium">Cherry Ridge Septic</span>
+              <span class="text-slate-500">78%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:78%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="font-medium">Faith Landing Pump</span>
+              <span class="text-slate-500">45%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:45%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="font-medium">Meridian Commercial</span>
+              <span class="text-slate-500">62%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill bg-blue-500" style="width:62%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="font-medium">Turquoise Ridge (TX)</span>
+              <span class="text-slate-500">90%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill bg-amber-500" style="width:90%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mindset -->
+      <div class="card p-4 bg-gradient-to-br from-indigo-600 to-purple-700 text-white border-0">
+        <p class="text-sm leading-relaxed">Produce quietly. Deliver accurate plans on deadline. Demonstrate value before evangelizing AI / Civil 3D optimizations.</p>
+      </div>
+    </section>
+
+    <!-- ========== PROJECTS ========== -->
+    <section id="projects" class="section space-y-4">
+      <h2 class="text-lg font-semibold">Projects</h2>
+      <div class="card p-4">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="font-semibold">Cherry Ridge</h3>
+            <p class="text-xs text-slate-500">Emmett · Septic Upgrade</p>
+          </div>
+          <span class="text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">78%</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">Drainfield expansion, grease trap, engineering letter nearly complete.</p>
+      </div>
+      <div class="card p-4">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="font-semibold">Faith Landing</h3>
+            <p class="text-xs text-slate-500">Canyon Village · Pump Station</p>
+          </div>
+          <span class="text-[11px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">45%</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">Design ongoing · ISPWC / ACHD coordination.</p>
+      </div>
+      <div class="card p-4">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="font-semibold">Meridian Commercial</h3>
+            <p class="text-xs text-slate-500">ADA · Parking · Utilities</p>
+          </div>
+          <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">62%</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">Vehicle tracking, valley gutters, hydrants, irrigation.</p>
+      </div>
+      <div class="card p-4">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="font-semibold">Turquoise Ridge</h3>
+            <p class="text-xs text-slate-500">Wise County TX · Residual</p>
+          </div>
+          <span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">90%</span>
+        </div>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">Plats / drainage wrap-up.</p>
+      </div>
+    </section>
+
+    <!-- ========== FINANCE ========== -->
+    <section id="finance" class="section space-y-4">
+      <h2 class="text-lg font-semibold">Finance & Investing</h2>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="card p-4">
+          <p class="text-[11px] text-slate-500 uppercase">Savings Rate</p>
+          <p class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">~50%</p>
+        </div>
+        <div class="card p-4">
+          <p class="text-[11px] text-slate-500 uppercase">Emergency Goal</p>
+          <p class="text-2xl font-bold mt-1">$20–30k</p>
+        </div>
+      </div>
+
+      <div class="card p-4">
+        <h3 class="font-semibold text-[15px] mb-3">Portfolio Snapshot</h3>
+        <canvas id="portfolioChart" height="180"></canvas>
+        <p class="text-[10px] text-slate-400 mt-2 text-center">Illustrative only — update with real numbers</p>
+      </div>
+
+      <div class="card p-4">
+        <h3 class="font-semibold text-[15px] mb-3">Key Positions</h3>
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between">
+            <span>TSLA</span>
+            <span class="font-mono font-medium">$328.58</span>
+          </div>
+          <div class="flex justify-between">
+            <span>SpaceX (SPCX)</span>
+            <span class="font-mono text-xs">Public · recovering</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Bitcoin</span>
+            <span class="font-mono font-medium">~$64,900</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-4 border-dashed border-2 border-slate-300 dark:border-slate-600">
+        <h3 class="font-semibold text-[15px] mb-1">Your Numbers</h3>
+        <p class="text-xs text-slate-500 mb-3">Paste or type balances from screenshots</p>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500">Schwab / E*TRADE</span>
+            <span class="font-mono text-slate-400">—</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500">Public.com</span>
+            <span class="font-mono text-slate-400">—</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500">Cash / Buffer</span>
+            <span class="font-mono text-slate-400">—</span>
+          </div>
+        </div>
+        <p class="text-[10px] text-slate-400 mt-3">Send screenshots anytime and I’ll update these for you.</p>
+      </div>
+    </section>
+
+    <!-- ========== LIFE / ENTERTAINMENT ========== -->
+    <section id="life" class="section space-y-4">
+      <h2 class="text-lg font-semibold">Life & Local</h2>
+
+      <div class="card p-4">
+        <h3 class="font-semibold text-[15px] mb-2">This Weekend · Meridian / Boise</h3>
+        <ul class="space-y-2.5 text-sm">
+          <li class="flex gap-2">
+            <span class="text-indigo-500">●</span>
+            <div>
+              <p class="font-medium">Juniper Market Street Fair</p>
+              <p class="text-xs text-slate-500">Sat · The Village at Meridian</p>
+            </div>
+          </li>
+          <li class="flex gap-2">
+            <span class="text-indigo-500">●</span>
+            <div>
+              <p class="font-medium">Boise Soul Food Festival</p>
+              <p class="text-xs text-slate-500">Sat · Julia Davis Park</p>
+            </div>
+          </li>
+          <li class="flex gap-2">
+            <span class="text-indigo-500">●</span>
+            <div>
+              <p class="font-medium">Eve of Destruction 18</p>
+              <p class="text-xs text-slate-500">Sat evening · Meridian Speedway</p>
+            </div>
+          </li>
+          <li class="flex gap-2">
+            <span class="text-indigo-500">●</span>
+            <div>
+              <p class="font-medium">Kleiner Park Live / Movie Nights</p>
+              <p class="text-xs text-slate-500">Ongoing free outdoor events</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card p-4">
+        <h3 class="font-semibold text-[15px] mb-2">Watch / Listen</h3>
+        <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <li>• Andor-style thoughtful sci-fi</li>
+          <li>• Heartland / Americana storytelling (Stapleton, Musgraves, etc.)</li>
+          <li>• MCU timeline gaps you still want</li>
+          <li>• Big Lebowski rewatch energy</li>
+        </ul>
+      </div>
+
+      <div class="card p-4">
+        <h3 class="font-semibold text-[15px] mb-2">Homestead & Nature</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300">Keep exploring Greenbelt, Kleiner, Fuller, and Hyatt Hidden Lakes. Sandpoint-area land research stays on the long list.</p>
+      </div>
+    </section>
+
+    <!-- ========== NEWS ========== -->
+    <section id="news" class="section space-y-4">
+      <h2 class="text-lg font-semibold">News Pulse</h2>
+
+      <div class="card p-4">
+        <p class="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 uppercase mb-1">Markets / AI</p>
+        <h3 class="font-semibold text-[15px]">SpaceX AI spending & Bitcoin markdown in focus</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Heavy AI capex and a Bitcoin fair-value hit highlighted in recent SpaceX reporting. Cathie Wood continues to flag TSLA + SPCX as underappreciated AI vehicles.</p>
+      </div>
+
+      <div class="card p-4">
+        <p class="text-[11px] font-medium text-amber-600 dark:text-amber-400 uppercase mb-1">Bitcoin</p>
+        <h3 class="font-semibold text-[15px]">BTC holding ~$65k range</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Mixed macro + AI capital competition cited as near-term headwind by Saylor and others.</p>
+      </div>
+
+      <div class="card p-4">
+        <p class="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 uppercase mb-1">Local / Idaho</p>
+        <h3 class="font-semibold text-[15px]">Strong summer event calendar</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Village markets, outdoor movies, speedway, and park concerts active through August.</p>
+      </div>
+
+      <div class="card p-4">
+        <p class="text-[11px] font-medium text-blue-600 dark:text-blue-400 uppercase mb-1">Engineering</p>
+        <h3 class="font-semibold text-[15px]">Quiet production still the edge</h3>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">Firms lagging on Civil 3D + AI workflow still reward high-output individual contributors first.</p>
+      </div>
+    </section>
+
+    <!-- ========== AI ========== -->
+    <section id="ai" class="section space-y-4">
+      <h2 class="text-lg font-semibold">AI Agents</h2>
+      <div class="card p-4">
+        <h3 class="font-semibold">Highest ROI right now</h3>
+        <ul class="mt-2 space-y-1.5 text-sm text-slate-600 dark:text-slate-300">
+          <li>• Ajera timesheet / invoice / proposal helpers</li>
+          <li>• Civil 3D Dynamo + labeling automation</li>
+          <li>• Email triage + meeting notes</li>
+          <li>• Personal weekly review generator</li>
+        </ul>
+      </div>
+      <div class="card p-4 bg-slate-900 text-white border-0">
+        <p class="text-sm">Build on top of what already exists. Don’t wait for the firm to modernize.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 inset-x-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 safe-area-pb">
+    <div class="flex justify-around items-center max-w-lg mx-auto">
+      <button class="nav-item active" data-section="overview">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" data-section="projects">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <span>Projects</span>
+      </button>
+      <button class="nav-item" data-section="finance">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Finance</span>
+      </button>
+      <button class="nav-item" data-section="life">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Life</span>
+      </button>
+      <button class="nav-item" data-section="news">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        <span>News</span>
+      </button>
+      <button class="nav-item" data-section="ai">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <span>AI</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    // Theme
+    const html = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      html.classList.add('dark');
+    }
+    document.getElementById('theme-toggle').onclick = () => {
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    };
+
+    // Clock
+    function tick() {
+      const now = new Date();
+      document.getElementById('clock').textContent = now.toLocaleString('en-US', {
+        weekday: 'short', month: 'short', day: 'numeric',
+        hour: 'numeric', minute: '2-digit', timeZone: 'America/Boise'
+      });
+      document.getElementById('today-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+    }
+    tick();
+    setInterval(tick, 30000);
+
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.section).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    // Todos
+    const KEY = 'jp_todos_v2';
+    let todos = JSON.parse(localStorage.getItem(KEY) || 'null') || [
+      { id: 1, text: 'Advance Cherry Ridge letter', done: false },
+      { id: 2, text: 'Deep Civil 3D block (2–3 hrs)', done: false },
+      { id: 3, text: 'Quick Ajera friction note', done: false }
+    ];
+
+    function renderTodos() {
+      document.getElementById('todo-list').innerHTML = todos.map(t => `
+        <li class="flex items-center gap-3 ${t.done ? 'opacity-50' : ''}">
+          <input type="checkbox" ${t.done ? 'checked' : ''} class="w-4 h-4 rounded" onchange="toggle(${t.id})" />
+          <span class="flex-1 text-sm ${t.done ? 'line-through' : ''}">${t.text}</span>
+          <button onclick="remove(${t.id})" class="text-slate-400 text-xs">✕</button>
+        </li>
+      `).join('');
+    }
+    window.toggle = id => {
+      todos = todos.map(t => t.id === id ? {...t, done: !t.done} : t);
+      localStorage.setItem(KEY, JSON.stringify(todos));
+      renderTodos();
+    };
+    window.remove = id => {
+      todos = todos.filter(t => t.id !== id);
+      localStorage.setItem(KEY, JSON.stringify(todos));
+      renderTodos();
+    };
+    document.getElementById('add-todo').onclick = () => {
+      const input = document.getElementById('todo-input');
+      if (!input.value.trim()) return;
+      todos.push({ id: Date.now(), text: input.value.trim(), done: false });
+      localStorage.setItem(KEY, JSON.stringify(todos));
+      input.value = '';
+      renderTodos();
+    };
+    document.getElementById('todo-input').onkeydown = e => { if (e.key === 'Enter') document.getElementById('add-todo').click(); };
+    renderTodos();
+
+    // Chart
+    new Chart(document.getElementById('portfolioChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['TSLA', 'SpaceX', 'BTC', 'Cash', 'Other'],
+        datasets: [{
+          data: [35, 25, 15, 15, 10],
+          backgroundColor: ['#6366f1', '#8b5cf6', '#f59e0b', '#10b981', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 11 } } } },
+        cutout: '62%'
+      }
+    });
+  </script>
+</body>
+</html>
