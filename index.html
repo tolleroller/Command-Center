@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Command Center | Joshua Pettijohn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: { 850: '#1a2332', 925: '#0f172a' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+    .card { @apply bg-white dark:bg-slate-800/80 backdrop-blur border border-slate-200 dark:border-slate-700/50 rounded-2xl shadow-sm; }
+    .kpi { @apply p-4 card; }
+    .progress-bar { @apply h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden; }
+    .progress-fill { @apply h-full rounded-full transition-all duration-500; }
+    .section { display: none; padding-bottom: 5.5rem; }
+    .section.active { display: block; }
+    .todo-item.completed { @apply opacity-50 line-through; }
+    .tab-btn { @apply flex flex-col items-center justify-center gap-0.5 py-2 px-1 rounded-xl transition-all active:scale-95; }
+    .tab-btn.active { @apply text-indigo-600 dark:text-indigo-400; }
+    .tab-btn:not(.active) { @apply text-slate-500 dark:text-slate-400; }
+    .tab-btn svg { @apply w-6 h-6; }
+    .tab-btn span { @apply text-[10px] font-medium; }
+    input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 9999px; background: #334155; outline: none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #6366f1; cursor: pointer; box-shadow: 0 0 0 3px rgba(99,102,241,0.3); }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 2px; }
+  </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-925 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+  <div class="min-h-full flex flex-col">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+      <div class="max-w-3xl mx-auto px-4">
+        <div class="flex items-center justify-between h-14">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-indigo-500/30">JP</div>
+            <div>
+              <h1 class="text-base font-semibold tracking-tight leading-none">Command Center</h1>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5" id="location-time">Meridian, ID · <span id="clock"></span></p>
+            </div>
+          </div>
+          <button id="theme-toggle" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Toggle theme">
+            <svg id="sun-icon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <svg id="moon-icon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-3xl mx-auto w-full px-4 py-5">
+      <!-- OVERVIEW -->
+      <section id="overview" class="section active space-y-5">
+        <!-- Three Headlines -->
+        <div class="space-y-2">
+          <div class="card p-3.5 border-l-4 border-l-indigo-500">
+            <p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Headline 1</p>
+            <p class="text-sm font-semibold mt-0.5">Quiet production first — deliver before optimizing</p>
+          </div>
+          <div class="card p-3.5 border-l-4 border-l-emerald-500">
+            <p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Headline 2</p>
+            <p class="text-sm font-semibold mt-0.5">Immediate cash goal: $10k in Discover / savings</p>
+          </div>
+          <div class="card p-3.5 border-l-4 border-l-amber-500">
+            <p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Headline 3</p>
+            <p class="text-sm font-semibold mt-0.5">Net worth ~$20k · Emergency target raised to $60k</p>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="kpi">
+            <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Monthly Savings</p>
+            <p class="mt-1 text-xl font-bold text-emerald-600 dark:text-emerald-400">~$4,000</p>
+            <p class="text-[11px] text-slate-500">~50% take-home</p>
+          </div>
+          <div class="kpi">
+            <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Net Worth</p>
+            <p class="mt-1 text-xl font-bold">~$20,000</p>
+            <p class="text-[11px] text-slate-500">Brokerages + cash</p>
+          </div>
+          <div class="kpi">
+            <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Cash Goal</p>
+            <p class="mt-1 text-xl font-bold text-indigo-600 dark:text-indigo-400">$10,000</p>
+            <p class="text-[11px] text-slate-500">Immediate buffer</p>
+          </div>
+          <div class="kpi">
+            <p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Focus Mode</p>
+            <p class="mt-1 text-xl font-bold text-purple-600 dark:text-purple-400">Quiet Wins</p>
+            <p class="text-[11px] text-slate-500">Deliver → then optimize</p>
+          </div>
+        </div>
+
+        <!-- Today's Focus -->
+        <div class="card p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-semibold">Today's Focus</h2>
+            <span class="text-xs text-slate-500" id="today-date"></span>
+          </div>
+          <ul id="todo-list" class="space-y-2"></ul>
+          <div class="mt-3 flex gap-2">
+            <input id="todo-input" type="text" placeholder="Add focus item..." class="flex-1 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            <button id="add-todo" class="px-4 py-2 bg-indigo-600 active:bg-indigo-700 text-white rounded-xl text-sm font-medium transition">Add</button>
+          </div>
+        </div>
+
+        <!-- Project Pulse (summary) -->
+        <div class="card p-4">
+          <h2 class="font-semibold mb-3">Project Pulse</h2>
+          <div id="project-pulse" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects" class="section space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Projects</h2>
+          <span class="text-xs text-slate-500">Tap to update progress</span>
+        </div>
+        <div id="projects-list" class="space-y-3"></div>
+      </section>
+
+      <!-- FINANCE -->
+      <section id="finance" class="section space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Finance</h2>
+          <span class="text-xs text-slate-500">Snapshot · Aug 8 2026</span>
+        </div>
+
+        <!-- Goals Progress -->
+        <div class="card p-4 space-y-4">
+          <div>
+            <div class="flex justify-between text-sm mb-1.5">
+              <span class="font-medium">Immediate Cash Goal</span>
+              <span class="text-slate-500">~$1,500 / $10,000</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:15%"></div></div>
+            <p class="text-[11px] text-slate-500 mt-1">Discover Online Savings · primary buffer target</p>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1.5">
+              <span class="font-medium">Emergency Fund Goal</span>
+              <span class="text-slate-500">~$20k / $60,000</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:33%"></div></div>
+            <p class="text-[11px] text-slate-500 mt-1">Raised target · liquid + low-risk</p>
+          </div>
+        </div>
+
+        <!-- Account Summary -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="kpi">
+            <p class="text-[10px] text-slate-500 uppercase tracking-wider">Schwab</p>
+            <p class="text-lg font-bold">$12,864</p>
+          </div>
+          <div class="kpi">
+            <p class="text-[10px] text-slate-500 uppercase tracking-wider">E*TRADE</p>
+            <p class="text-lg font-bold">$1,835</p>
+          </div>
+          <div class="kpi">
+            <p class="text-[10px] text-slate-500 uppercase tracking-wider">Public.com</p>
+            <p class="text-lg font-bold">$1,773</p>
+          </div>
+          <div class="kpi">
+            <p class="text-[10px] text-slate-500 uppercase tracking-wider">Cash / Savings</p>
+            <p class="text-lg font-bold text-emerald-500">~$1,870</p>
+          </div>
+        </div>
+
+        <!-- Main Positions (thinkorswim) -->
+        <div class="card p-4">
+          <h3 class="font-semibold mb-1">Main Positions <span class="text-xs font-normal text-slate-500">(thinkorswim ~$12.9k Net Liq)</span></h3>
+          <p class="text-[11px] text-slate-500 mb-3">P/L Open ≈ –$1,970 · Day +$26</p>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">TSLA</span> <span class="text-xs text-slate-500">17 sh</span></div>
+              <div class="text-right"><span class="font-mono">$5,593</span> <span class="text-xs text-red-500">–18%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">MSTR</span> <span class="text-xs text-slate-500">17 sh</span></div>
+              <div class="text-right"><span class="font-mono">$1,703</span> <span class="text-xs text-red-500">–19%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">STRC</span> <span class="text-xs text-slate-500">15 sh</span></div>
+              <div class="text-right"><span class="font-mono">$1,425</span> <span class="text-xs text-red-500">–0.3%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">PLTR</span> <span class="text-xs text-slate-500">8 sh</span></div>
+              <div class="text-right"><span class="font-mono">$1,374</span> <span class="text-xs text-emerald-500">+37%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">CBRS</span> <span class="text-xs text-slate-500">6 sh</span></div>
+              <div class="text-right"><span class="font-mono">$1,370</span> <span class="text-xs text-emerald-500">+1.5%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">PL</span> <span class="text-xs text-slate-500">34 sh</span></div>
+              <div class="text-right"><span class="font-mono">$821</span> <span class="text-xs text-red-500">–24%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">IONQ</span> <span class="text-xs text-slate-500">10 sh</span></div>
+              <div class="text-right"><span class="font-mono">$443</span> <span class="text-xs text-red-500">–25%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">QBTS</span> <span class="text-xs text-slate-500">20 sh</span></div>
+              <div class="text-right"><span class="font-mono">$415</span> <span class="text-xs text-red-500">–13%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">RGTI</span> <span class="text-xs text-slate-500">20 sh</span></div>
+              <div class="text-right"><span class="font-mono">$359</span> <span class="text-xs text-red-500">–18%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5 border-b border-slate-100 dark:border-slate-700/40">
+              <div><span class="font-medium">VERU</span> <span class="text-xs text-slate-500">120 sh</span></div>
+              <div class="text-right"><span class="font-mono">$281</span> <span class="text-xs text-red-500">–26%</span></div>
+            </div>
+            <div class="flex justify-between items-center py-1.5">
+              <div><span class="font-medium">Others</span> <span class="text-xs text-slate-500">STRK, INFQ…</span></div>
+              <div class="text-right text-xs text-slate-500">~ $440</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Other accounts -->
+        <div class="card p-4">
+          <h3 class="font-semibold mb-3">Other Holdings</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span>Public · SPCX 13 sh</span><span class="font-mono">$1,743</span></div>
+            <div class="flex justify-between"><span>E*TRADE · SPCX 10 + AORT / NVDA / ONDS</span><span class="font-mono">$1,835</span></div>
+            <div class="flex justify-between"><span>Discover Online Savings</span><span class="font-mono text-emerald-500">$1,504</span></div>
+            <div class="flex justify-between"><span>Checking (Discover + Schwab)</span><span class="font-mono">~$1,157</span></div>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-3">Plan: migrate Discover → X Money when available (currently premium-limited).</p>
+        </div>
+      </section>
+
+      <!-- GOALS -->
+      <section id="goals" class="section space-y-4">
+        <h2 class="text-lg font-semibold">Goals</h2>
+        <div class="card p-4">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 text-lg">💵</div>
+            <div>
+              <h3 class="font-semibold">$10k Cash Buffer</h3>
+              <p class="text-xs text-slate-500">Most immediate</p>
+            </div>
+          </div>
+          <div class="progress-bar mt-2"><div class="progress-fill bg-indigo-500" style="width:15%"></div></div>
+        </div>
+        <div class="card p-4">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 text-lg">🛡️</div>
+            <div>
+              <h3 class="font-semibold">$60k Emergency Fund</h3>
+              <p class="text-xs text-slate-500">Raised target</p>
+            </div>
+          </div>
+          <div class="progress-bar mt-2"><div class="progress-fill bg-emerald-500" style="width:33%"></div></div>
+        </div>
+        <div class="card p-4">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 text-lg">🏔️</div>
+            <div>
+              <h3 class="font-semibold">Homestead / Cabin</h3>
+              <p class="text-xs text-slate-500">3–7 acres · Sandpoint area preferred</p>
+            </div>
+          </div>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">1,000–1,200 sq ft cottage · solar + well · phased DIY after hand recovery · $300–550k envelope</p>
+        </div>
+        <div class="card p-4">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-purple-600 text-lg">📐</div>
+            <div>
+              <h3 class="font-semibold">Career & PE</h3>
+              <p class="text-xs text-slate-500">Quiet high-output streak</p>
+            </div>
+          </div>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">Idaho PE pending · multi-state vision · Civil 3D + AI as differentiator · optionality at high-velocity firms later</p>
+        </div>
+      </section>
+
+      <!-- HEALTH -->
+      <section id="health" class="section space-y-4">
+        <h2 class="text-lg font-semibold">Health & Habits</h2>
+        <div class="grid grid-cols-1 gap-3">
+          <div class="card p-4">
+            <h3 class="font-semibold mb-2">Movement</h3>
+            <ul class="text-sm space-y-1 text-slate-600 dark:text-slate-300">
+              <li>• Morning meditation / yoga</li>
+              <li>• Lower-body focus (hand limitation)</li>
+              <li>• 2–3× strength / week</li>
+              <li>• Sat longer session</li>
+            </ul>
+          </div>
+          <div class="card p-4">
+            <h3 class="font-semibold mb-2">Nutrition & Recovery</h3>
+            <ul class="text-sm space-y-1 text-slate-600 dark:text-slate-300">
+              <li>• High protein, low carb, intuitive</li>
+              <li>• Left hand → surgery + 3 mo PT planning</li>
+              <li>• Protect accretive loops (~3 week flip)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI -->
+      <section id="ai" class="section space-y-4">
+        <h2 class="text-lg font-semibold">AI Agents</h2>
+        <div class="card p-4 border-l-4 border-l-indigo-500">
+          <h3 class="font-semibold">Highest ROI right now</h3>
+          <ul class="text-sm mt-2 space-y-1 text-slate-600 dark:text-slate-300">
+            <li>• Ajera timesheet / invoice / proposal helpers</li>
+            <li>• Civil 3D Dynamo + labeling automation</li>
+            <li>• Email triage + meeting notes</li>
+            <li>• Personal weekly review generator</li>
+          </ul>
+        </div>
+        <div class="card p-4 bg-slate-900 text-white border-0">
+          <p class="text-sm opacity-90">Build on top of existing tools. Don’t wait for the firm to modernize. Quiet internal leverage compounds.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 safe-area-pb">
+      <div class="max-w-3xl mx-auto grid grid-cols-5 h-16">
+        <button class="tab-btn active" data-section="overview">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="tab-btn" data-section="projects">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          <span>Projects</span>
+        </button>
+        <button class="tab-btn" data-section="finance">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Finance</span>
+        </button>
+        <button class="tab-btn" data-section="goals">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span>Goals</span>
+        </button>
+        <button class="tab-btn" data-section="ai">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <span>AI</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    // Theme
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      html.classList.add('dark');
+    }
+    themeToggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      const opts = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Boise' };
+      document.getElementById('clock').textContent = now.toLocaleString('en-US', opts);
+      document.getElementById('today-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // Bottom tab navigation
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.section).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+
+    // Todos
+    const TODO_KEY = 'jp_command_todos';
+    let todos = JSON.parse(localStorage.getItem(TODO_KEY) || '[]');
+    if (todos.length === 0) {
+      todos = [
+        { id: 1, text: 'Advance Cherry Ridge letter package', done: false },
+        { id: 2, text: 'Civil 3D production block (2–3 hrs)', done: false },
+        { id: 3, text: 'Review Ajera / timesheet friction', done: false },
+        { id: 4, text: '10–15 min evening review', done: false }
+      ];
+      localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+    }
+
+    function renderTodos() {
+      const list = document.getElementById('todo-list');
+      list.innerHTML = todos.map(t => `
+        <li class="todo-item flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 ${t.done ? 'completed' : ''}" data-id="${t.id}">
+          <input type="checkbox" ${t.done ? 'checked' : ''} class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" onchange="toggleTodo(${t.id})" />
+          <span class="flex-1 text-sm">${t.text}</span>
+          <button onclick="deleteTodo(${t.id})" class="text-slate-400 hover:text-red-500 text-xs px-1">✕</button>
+        </li>
+      `).join('');
+    }
+
+    window.toggleTodo = (id) => {
+      todos = todos.map(t => t.id === id ? { ...t, done: !t.done } : t);
+      localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+      renderTodos();
+    };
+
+    window.deleteTodo = (id) => {
+      todos = todos.filter(t => t.id !== id);
+      localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+      renderTodos();
+    };
+
+    document.getElementById('add-todo').addEventListener('click', () => {
+      const input = document.getElementById('todo-input');
+      const text = input.value.trim();
+      if (!text) return;
+      todos.push({ id: Date.now(), text, done: false });
+      localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+      input.value = '';
+      renderTodos();
+    });
+    document.getElementById('todo-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('add-todo').click();
+    });
+    renderTodos();
+
+    // Projects with interactive progress + complete
+    const PROJECT_KEY = 'jp_command_projects';
+    let projects = JSON.parse(localStorage.getItem(PROJECT_KEY) || 'null');
+    if (!projects) {
+      projects = [
+        { id: 'cherry', name: 'Cherry Ridge Septic', location: 'Emmett, ID', pct: 78, done: false, notes: 'Drainfield expansion + engineering letter · near complete' },
+        { id: 'faith', name: 'Faith Landing Pump Station', location: 'Canyon Village', pct: 45, done: false, notes: 'Commercial subdivision · design + ISPWC/ACHD coordination' },
+        { id: 'meridian', name: 'Meridian Commercial / ADA', location: 'Meridian', pct: 62, done: false, notes: 'Vehicle tracking, valley gutters, hydrants, irrigation' },
+        { id: 'turquoise', name: 'Turquoise Ridge (TX residual)', location: 'Wise County, TX', pct: 90, done: false, notes: 'Plats / drainage wrap-up' }
+      ];
+      localStorage.setItem(PROJECT_KEY, JSON.stringify(projects));
+    }
+
+    function saveProjects() {
+      localStorage.setItem(PROJECT_KEY, JSON.stringify(projects));
+      renderProjects();
+      renderPulse();
+    }
+
+    function renderPulse() {
+      const el = document.getElementById('project-pulse');
+      el.innerHTML = projects.map(p => `
+        <div class="${p.done ? 'opacity-50' : ''}">
+          <div class="flex justify-between text-sm mb-1">
+            <span class="font-medium">${p.name}</span>
+            <span class="text-slate-500">${p.done ? 'Done' : p.pct + '%'}</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill ${p.done ? 'bg-slate-400' : 'bg-indigo-500'}" style="width:${p.pct}%"></div></div>
+        </div>
+      `).join('');
+    }
+
+    function renderProjects() {
+      const el = document.getElementById('projects-list');
+      el.innerHTML = projects.map(p => `
+        <div class="card p-4 ${p.done ? 'opacity-60' : ''}">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold truncate">${p.name}</h3>
+                ${p.done ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Complete</span>' : ''}
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">${p.location}</p>
+              <p class="text-xs text-slate-500 mt-1">${p.notes}</p>
+            </div>
+            <label class="flex items-center gap-1.5 text-xs shrink-0 cursor-pointer">
+              <input type="checkbox" ${p.done ? 'checked' : ''} onchange="toggleProjectDone('${p.id}')" class="w-4 h-4 rounded text-indigo-600" />
+              Done
+            </label>
+          </div>
+          <div class="mt-3">
+            <div class="flex justify-between text-xs mb-1">
+              <span>Progress</span>
+              <span id="pct-${p.id}">${p.pct}%</span>
+            </div>
+            <input type="range" min="0" max="100" value="${p.pct}" class="w-full" oninput="updateProjectPct('${p.id}', this.value)" />
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.toggleProjectDone = (id) => {
+      projects = projects.map(p => p.id === id ? { ...p, done: !p.done, pct: !p.done ? 100 : p.pct } : p);
+      saveProjects();
+    };
+
+    window.updateProjectPct = (id, val) => {
+      const pct = parseInt(val, 10);
+      projects = projects.map(p => p.id === id ? { ...p, pct, done: pct === 100 } : p);
+      document.getElementById('pct-' + id).textContent = pct + '%';
+      localStorage.setItem(PROJECT_KEY, JSON.stringify(projects));
+      renderPulse();
+    };
+
+    renderProjects();
+    renderPulse();
+  </script>
+</body>
+</html>
