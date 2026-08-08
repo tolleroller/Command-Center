@@ -289,66 +289,61 @@
       </section>
 
       <!-- LAB -->
-      <section id="lab" class="section space-y-4">
-        <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Lab</h2><span class="text-xs text-slate-500">Ideas · bullets · map</span></div>
-        <p class="text-sm text-slate-500">Capture and connect innovations. Each idea holds its own next-step bullets.</p>
+      <section id="lab" class="section space-y-6">
+        <div>
+          <h2 class="text-lg font-semibold">Lab</h2>
+          <p class="text-sm text-slate-500 mt-1">Living workshop for ideas. Dump the spark — get vision, synergies, and real paths back.</p>
+        </div>
 
-        <!-- Static visual idea map -->
-        <div class="card p-4">
-          <h3 class="font-semibold text-sm mb-3">Idea Map</h3>
-          <div class="relative py-4">
-            <div class="flex justify-center mb-4">
-              <div class="mind-node bg-indigo-600 text-white px-4 py-2">You · Leverage</div>
+        <!-- Idea Map -->
+        <div class="card p-5">
+          <h3 class="font-semibold text-sm mb-4">Synergy Map</h3>
+          <div class="space-y-4">
+            <div class="flex justify-center">
+              <div class="rounded-2xl bg-indigo-600 text-white px-5 py-3 text-sm font-semibold text-center shadow-md">Financial + Personal Freedom<br><span class="text-xs font-normal opacity-90">Remote multi-state PE · next decade</span></div>
             </div>
-            <div class="grid grid-cols-2 gap-3 text-center">
-              <div class="space-y-2">
-                <div class="mind-node bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-200">Work Automation</div>
-                <div class="text-[11px] text-slate-500 space-y-1">
-                  <div>Ajera agent</div>
-                  <div>Dynamo labeling</div>
-                  <div>Quiet process wins</div>
-                </div>
+            <div class="grid grid-cols-1 gap-3">
+              <div class="rounded-xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200/50 dark:border-emerald-800/40 p-3">
+                <p class="text-xs font-semibold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider mb-1">Work Automation</p>
+                <p class="text-sm">Ajera agents · Dynamo packs · Quiet process wins</p>
+                <p class="text-[11px] text-slate-500 mt-1">→ Free hours → higher output at KM → proof for future clients</p>
               </div>
-              <div class="space-y-2">
-                <div class="mind-node bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200">Personal AI</div>
-                <div class="text-[11px] text-slate-500 space-y-1">
-                  <div>Taste recommender</div>
-                  <div>Preference agents</div>
-                </div>
+              <div class="rounded-xl bg-purple-50 dark:bg-purple-900/30 border border-purple-200/50 dark:border-purple-800/40 p-3">
+                <p class="text-xs font-semibold text-purple-700 dark:text-purple-300 uppercase tracking-wider mb-1">Personal Systems</p>
+                <p class="text-sm">Taste / preference agents · Command Center itself</p>
+                <p class="text-[11px] text-slate-500 mt-1">→ Practice building agents that actually stick in daily life</p>
               </div>
-              <div class="space-y-2 col-span-2">
-                <div class="mind-node bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 mx-auto max-w-[180px]">Bigger Bets</div>
-                <div class="text-[11px] text-slate-500 space-y-1">
-                  <div>Multi-state PE consultancy</div>
-                  <div>Productized systems → autonomy</div>
-                </div>
+              <div class="rounded-xl bg-amber-50 dark:bg-amber-900/30 border border-amber-200/50 dark:border-amber-800/40 p-3">
+                <p class="text-xs font-semibold text-amber-700 dark:text-amber-300 uppercase tracking-wider mb-1">Bigger Bet</p>
+                <p class="text-sm">Multi-state PE remote consultancy</p>
+                <p class="text-[11px] text-slate-500 mt-1">→ Productized tools + PE credentials = leverage & autonomy</p>
               </div>
             </div>
-            <p class="text-[10px] text-slate-400 mt-3 text-center">Work automation compounds → frees time → feeds bigger bets</p>
+            <p class="text-[11px] text-slate-400 text-center">Automation compounds → time & proof → consultancy → freedom</p>
           </div>
         </div>
 
-        <div id="ideas-list" class="space-y-3"></div>
+        <!-- Idea cards -->
+        <div id="ideas-list" class="space-y-6"></div>
 
-        <div class="card p-4 space-y-3">
-          <h3 class="font-semibold text-sm">Add idea</h3>
+        <!-- Add new idea -->
+        <div class="card p-5 space-y-3">
+          <h3 class="font-semibold">Capture a new spark</h3>
           <input id="idea-title" type="text" placeholder="Idea title" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-          <div class="flex gap-2">
-            <input id="idea-first-bullet" type="text" placeholder="First next step (optional)" class="flex-1 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm" />
-          </div>
+          <input id="idea-first-bullet" type="text" placeholder="First next step (optional)" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm" />
           <button id="add-idea" class="w-full py-2.5 bg-indigo-600 active:bg-indigo-700 text-white rounded-xl text-sm font-medium">Add to Lab</button>
+          <p class="text-[11px] text-slate-500">New ideas start simple. Ask me later to flush one out with vision + options.</p>
         </div>
 
         <div class="card p-4 border-l-4 border-l-indigo-500">
-          <h3 class="font-semibold mb-2">Lab Insights</h3>
+          <h3 class="font-semibold mb-2">How to use Lab</h3>
           <ul class="text-sm space-y-2 text-slate-600 dark:text-slate-300">
-            <li>• Highest near-term ROI sits in Work Automation (Ajera, Dynamo, process)</li>
-            <li>• Capture first — refine and connect later</li>
-            <li>• Mature ideas can graduate into a Project or a Goal note</li>
+            <li>• Dump raw ideas anytime</li>
+            <li>• Use the bullets under each card for your own next actions</li>
+            <li>• When you want deeper refinement, send me the idea name and I’ll expand vision, synergies, and weekend-project options</li>
           </ul>
         </div>
 
-        <!-- Lab inspiration images -->
         <div>
           <h2 class="font-semibold mb-2 text-sm text-slate-500 uppercase tracking-wider">Inspiration</h2>
           <div class="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" style="scrollbar-width:none">
@@ -460,15 +455,116 @@
     renderProjects(); renderPulse();
 
     // Lab ideas with bullets
-    const IDEA_KEY = 'jp_lab_ideas_v2';
-    let ideas = JSON.parse(localStorage.getItem(IDEA_KEY) || 'null') || [
-      { id: 1, title: 'Ajera timesheet + invoice agent', bullets: ['Map current friction points', 'Prototype one timesheet helper'] },
-      { id: 2, title: 'Civil 3D Dynamo labeling pack', bullets: ['List repeated label types', 'Start with multileaders + pipes'] },
-      { id: 3, title: 'Personal AI taste recommender', bullets: ['Export recent likes from 1–2 sources'] },
-      { id: 4, title: 'Quiet process improvements at KM', bullets: ['Ship one template before talking about it'] },
-      { id: 5, title: 'Multi-state PE remote consultancy', bullets: ['Track Idaho PE status', 'Note recurring deliverable patterns'] }
-    ];
+    const IDEA_KEY = 'jp_lab_ideas_v3';
+    let ideas = JSON.parse(localStorage.getItem(IDEA_KEY) || 'null');
+    if (!ideas) {
+      ideas = [
+        {
+          id: 1,
+          title: 'Ajera timesheet + invoice agent',
+          vision: 'Turn the daily Ajera grind into a 2–3 minute guided flow. Capture time by voice or quick picks, auto-draft invoices from the same data, and surface only the exceptions that need your eyes. This is the highest-frequency pain at KM and the fastest place to prove “agent > meeting.”',
+          synergies: 'Pairs directly with Quiet process improvements and Dynamo packs. Every hour saved is proof you can productize workflow for future consultancy clients. Also trains you on the same agent patterns you will reuse for personal systems.',
+          options: [
+            'Weekend MVP: one voice/text → timesheet draft for a single project type',
+            'Mid path: timesheet + simple invoice PDF export for 2–3 common fee types',
+            'Full vision: full exception-only inbox that sits on top of Ajera without replacing it'
+          ],
+          bullets: ['Map the 3 most repeated Ajera clicks this week', 'Prototype one timesheet helper with Grok']
+        },
+        {
+          id: 2,
+          title: 'Civil 3D Dynamo labeling pack',
+          vision: 'A small, opinionated Dynamo/script pack that makes labels, multileaders, pipe tags, and match lines consistent and fast. Not a full automation suite — just the 5–8 actions you repeat on almost every sheet set. Becomes both a personal speed tool and a future deliverable for other PEs.',
+          synergies: 'Feeds Quiet process improvements at KM and becomes a concrete “here is how I ship faster” example for the multi-state consultancy. Also a clean weekend-project shape: one labeling problem at a time.',
+          options: [
+            'Weekend: one Dynamo graph for pipe labels + multileader style',
+            'Next: add match-line and structure tags; document as a mini pack',
+            'Later: package + light instructions so another engineer can run it'
+          ],
+          bullets: ['List the 5 labels you recreate most often', 'Start with multileaders + pipes only']
+        },
+        {
+          id: 3,
+          title: 'Personal AI taste recommender',
+          vision: 'A lightweight agent that learns from what you already save and like (Pinterest, Spotify, Marketplace, etc.) and surfaces better next choices without you hunting. Practice ground for preference memory and agentic retrieval — the same muscles needed for work agents, just lower stakes.',
+          synergies: 'Low-risk training ground for the same patterns used in Ajera/Dynamo agents. Keeps the “build agents that stick in daily life” habit alive outside of work pressure.',
+          options: [
+            'Weekend: export one source (e.g. recent Spotify or Pinterest) and get 10 ranked suggestions',
+            'Next: simple recurring “what should I look at this weekend” prompt',
+            'Later: multi-source taste profile that compounds over months'
+          ],
+          bullets: ['Pick one source to export this weekend']
+        },
+        {
+          id: 4,
+          title: 'Quiet process improvements at KM',
+          vision: 'Ship small, undeniable improvements (templates, checklists, sheet standards, naming) before talking about bigger AI ideas. Build credibility through output so that when you later show an agent or Dynamo pack, the firm already trusts the results.',
+          synergies: 'Creates the political and practical space for Ajera and Dynamo work to land. Also generates reusable artifacts you can later offer under Salient Land Solutions.',
+          options: [
+            'This month: one high-visibility template or checklist that removes a repeated pain',
+            'Next: a short “how we do X here” note that juniors actually use',
+            'Later: a small internal library that becomes part of your personal brand'
+          ],
+          bullets: ['Identify one repeated friction this week', 'Ship the fix before mentioning AI']
+        },
+        {
+          id: 5,
+          title: 'Multi-state PE remote consultancy',
+          vision: 'Long-arc goal: Salient Land Solutions (or successor) as a lean, remote, multi-state PE practice that sells judgment + productized delivery instead of pure hours. The tools you build now (agents, Dynamo packs, standards) become both your leverage and eventual offerings. Financial and schedule autonomy is the point.',
+          synergies: 'Every automation and process win is both KM value and future product. Idaho PE registration + Texas foundation + productized workflows = the platform. Command Center itself is practice for the operating system of that firm.',
+          options: [
+            'Near term: stay excellent at KM while collecting PE licenses and side artifacts',
+            'Mid: selective remote/overflow work under your DBA using your own tools',
+            'Long: small autonomous practice with juniors/drafting support and agent-assisted delivery'
+          ],
+          bullets: ['Track Idaho PE status monthly', 'Note which deliverables repeat across clients']
+        }
+      ];
+      localStorage.setItem(IDEA_KEY, JSON.stringify(ideas));
+    }
     function saveIdeas() { localStorage.setItem(IDEA_KEY, JSON.stringify(ideas)); renderIdeas(); }
+    function renderIdeas() {
+      document.getElementById('ideas-list').innerHTML = ideas.length ? ideas.map(i => `
+        <div class="card p-5 space-y-4">
+          <div class="flex items-start justify-between gap-3">
+            <h3 class="font-semibold text-base leading-snug flex-1">${i.title}</h3>
+            <button onclick="deleteIdea(${i.id})" class="text-slate-400 text-xs px-1 shrink-0">✕</button>
+          </div>
+          ${i.vision ? `<div><p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Vision</p><p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${i.vision}</p></div>` : ''}
+          ${i.synergies ? `<div><p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Synergies</p><p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${i.synergies}</p></div>` : ''}
+          ${i.options && i.options.length ? `<div><p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1">Paths / options</p><ul class="text-sm space-y-1.5 text-slate-600 dark:text-slate-300">${i.options.map(o => `<li>• ${o}</li>`).join('')}</ul></div>` : ''}
+          <div class="pt-1 border-t border-slate-100 dark:border-slate-700/50">
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">Your next steps</p>
+            <ul class="space-y-1 mb-2">
+              ${(i.bullets || []).map((b, idx) => `<li class="bullet-item"><span class="flex-1 text-sm">${b}</span><button onclick="deleteIdeaBullet(${i.id},${idx})" class="text-slate-400 text-xs">✕</button></li>`).join('')}
+            </ul>
+            <div class="flex gap-2">
+              <input type="text" id="bullet-input-${i.id}" placeholder="Add your next step..." class="flex-1 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-sm" />
+              <button onclick="addIdeaBullet(${i.id})" class="px-3 py-2 bg-indigo-600 text-white rounded-xl text-sm">Add</button>
+            </div>
+          </div>
+        </div>`).join('') : '<p class="text-sm text-slate-500 py-4 text-center">No ideas yet — capture one below.</p>';
+    }
+    window.deleteIdea = id => { ideas = ideas.filter(i => i.id !== id); saveIdeas(); };
+    window.deleteIdeaBullet = (id, idx) => {
+      ideas = ideas.map(i => { if (i.id === id) { const b = [...(i.bullets||[])]; b.splice(idx,1); return {...i, bullets: b}; } return i; });
+      saveIdeas();
+    };
+    window.addIdeaBullet = id => {
+      const input = document.getElementById('bullet-input-' + id);
+      const text = input.value.trim(); if (!text) return;
+      ideas = ideas.map(i => i.id === id ? {...i, bullets: [...(i.bullets||[]), text]} : i);
+      saveIdeas();
+    };
+    document.getElementById('add-idea').addEventListener('click', () => {
+      const title = document.getElementById('idea-title').value.trim(); if (!title) return;
+      const first = document.getElementById('idea-first-bullet').value.trim();
+      ideas.unshift({ id: Date.now(), title, vision: '', synergies: '', options: [], bullets: first ? [first] : [] });
+      document.getElementById('idea-title').value = '';
+      document.getElementById('idea-first-bullet').value = '';
+      saveIdeas();
+    });
+    renderIdeas(); }
     function renderIdeas() {
       document.getElementById('ideas-list').innerHTML = ideas.length ? ideas.map(i => `
         <div class="idea-card">
