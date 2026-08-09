@@ -36,10 +36,20 @@
     .tab-scroll::-webkit-scrollbar { display: none; }
     .tab-btn { @apply flex flex-col items-center justify-center gap-0.5 rounded-2xl transition-all duration-150 shrink-0; min-height: 56px; min-width: 64px; padding: 6px 10px; -webkit-user-select: none; user-select: none; }
     .tab-btn:active { transform: scale(0.92); }
-    .tab-btn.active { @apply text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/40; }
-    .tab-btn:not(.active) { @apply text-slate-500 dark:text-slate-400; }
+    .tab-btn.active { 
+      color: #4f46e5; 
+      background-color: #e0e7ff; 
+      font-weight: 600;
+    }
+    .dark .tab-btn.active { 
+      color: #a5b4fc; 
+      background-color: rgba(79, 70, 229, 0.35); 
+    }
+    .tab-btn:not(.active) { color: #64748b; }
+    .dark .tab-btn:not(.active) { color: #94a3b8; }
     .tab-btn svg { width: 22px; height: 22px; }
     .tab-btn span { font-size: 10px; font-weight: 500; }
+    .tab-btn.active span { font-weight: 600; }
     input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 9999px; background: #334155; outline: none; width: 100%; }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #6366f1; cursor: pointer; box-shadow: 0 0 0 4px rgba(99,102,241,0.25); }
     .news-card { @apply p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700/40; }
@@ -248,14 +258,17 @@
                 <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 shrink-0">Disney+</span>
               </div>
             </div>
-            <div class="card p-3.5">
-              <div class="flex justify-between items-start gap-3">
-                <div>
-                  <p class="font-semibold text-sm">Yellowstone universe extensions</p>
-                  <p class="text-xs text-slate-500 mt-0.5">Paramount+ · Multiple spin-offs in various stages</p>
-                  <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">You gave Yellowstone and 1883 perfect 10s. The frontier / family-power lane is clearly one of your strongest.</p>
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/vOYfRZ0NpUK5hG2CB2dJFnYJlGe.jpg" alt="Yellowstone" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0 flex-1">
+                  <div class="flex justify-between items-start gap-2">
+                    <p class="font-semibold text-sm">Yellowstone universe extensions</p>
+                    <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 shrink-0">Paramount+</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">Multiple spin-offs in various stages</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">You gave Yellowstone and 1883 perfect 10s. The frontier / family-power lane is clearly one of your strongest.</p>
                 </div>
-                <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 shrink-0">Paramount+</span>
               </div>
             </div>
           </div>
@@ -267,25 +280,45 @@
             <span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Movies & TV · For You</span>
           </div>
           <div class="space-y-3">
-            <div class="card p-3.5">
-              <p class="font-semibold text-sm">Sicario (and the sequel)</p>
-              <p class="text-xs text-slate-500 mt-0.5">Streaming on multiple services</p>
-              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">Quiet, morally gray, highly controlled tension. Sits next to your Bourne / Night Agent / Jack Reacher 10s.</p>
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/lz8vNyXeidqqOdJW9ZjnDAMb5Vr.jpg" alt="Sicario" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm">Sicario (and the sequel)</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Multiple services</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Quiet, morally gray, controlled tension. Sits next to your Bourne / Night Agent / Jack Reacher 10s.</p>
+                </div>
+              </div>
             </div>
-            <div class="card p-3.5">
-              <p class="font-semibold text-sm">The Bear (if not finished)</p>
-              <p class="text-xs text-slate-500 mt-0.5">Hulu / Disney+</p>
-              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">Character intensity + found-family pressure. Matches the prestige drama side of your list without being pure prestige for its own sake.</p>
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/eKfVzzEazSIjJMrw9ADa2x8ksLz.jpg" alt="The Bear" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm">The Bear</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Hulu / Disney+</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Character intensity + found-family pressure. Matches the prestige drama side of your list.</p>
+                </div>
+              </div>
             </div>
-            <div class="card p-3.5">
-              <p class="font-semibold text-sm">True Detective (Season 1 especially)</p>
-              <p class="text-xs text-slate-500 mt-0.5">Max / HBO</p>
-              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">You already rated it a 9. The philosophical + procedural blend is rare and worth revisiting when you want atmosphere.</p>
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/dC7jkj2g1aU8sxKqM6D4g44xA6w.jpg" alt="True Detective" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm">True Detective (S1)</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Max / HBO</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">You rated it 9. Philosophical + procedural blend — strong atmosphere when you want it.</p>
+                </div>
+              </div>
             </div>
-            <div class="card p-3.5">
-              <p class="font-semibold text-sm">There Will Be Blood</p>
-              <p class="text-xs text-slate-500 mt-0.5">Multiple services</p>
-              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">You rated it 9. One of the purest “power + landscape + character” films that aligns with your western and prestige leanings.</p>
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/fa0RDkAlCec0STeMNAhPaF89q6U.jpg" alt="There Will Be Blood" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm">There Will Be Blood</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Multiple services</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">You rated it 9. Power + landscape + character — aligns with your western and prestige leanings.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
