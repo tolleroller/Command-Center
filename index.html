@@ -77,10 +77,23 @@
               <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5"><span id="clock"></span></p>
             </div>
           </div>
-          <button id="theme-toggle" class="p-2.5 rounded-xl active:bg-slate-100 dark:active:bg-slate-800 transition -mr-1">
-            <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-          </button>
+          <div class="flex items-center gap-0.5 -mr-1">
+            <button id="theme-toggle" class="p-2.5 rounded-xl active:bg-slate-100 dark:active:bg-slate-800 transition" type="button" aria-label="Toggle theme">
+              <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+              <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </button>
+            <div class="relative">
+              <button id="more-menu-btn" type="button" class="p-2.5 rounded-xl active:bg-slate-100 dark:active:bg-slate-800 transition" aria-label="More" aria-haspopup="true" aria-expanded="false">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
+              </button>
+              <div id="more-menu" class="hidden absolute right-0 mt-1 w-52 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg py-1 z-50">
+                <button type="button" id="btn-export-data" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Export backup</button>
+                <button type="button" id="btn-import-data" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Import backup</button>
+                <p id="backup-status" class="px-4 py-1.5 text-[11px] text-slate-500 border-t border-slate-100 dark:border-slate-800 min-h-[1.25rem]"></p>
+              </div>
+              <input type="file" id="import-file" accept="application/json,.json" class="hidden" />
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -122,8 +135,7 @@
           </div>
         </div>
         <div class="card p-4"><h2 class="font-semibold mb-3">Project Pulse</h2><div id="project-pulse" class="space-y-3"></div></div>
-
-        <!-- Vision board — ending statement, full-screen height -->
+<!-- Vision board — ending statement, full-screen height -->
         <div>
           <p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium mb-2">Vision Board</p>
           <div class="relative rounded-2xl overflow-hidden w-full" style="min-height:100dvh">
@@ -1096,6 +1108,102 @@
         saveIdeas();
       });
     }
+
+
+    // More menu
+    (function() {
+      const btn = document.getElementById('more-menu-btn');
+      const menu = document.getElementById('more-menu');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = !menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', open);
+        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+      document.addEventListener('click', () => {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+      menu.addEventListener('click', (e) => e.stopPropagation());
+    })();
+
+    // --- Personal data backup (export / import) ---
+    const BACKUP_KEYS = [
+      'theme',
+      'jp_command_todos',
+      'jp_goal_bullets_v1',
+      'jp_health_bullets_v1',
+      'jp_command_projects_v3',
+      'jp_lab_ideas_v3'
+    ];
+    function setBackupStatus(msg) {
+      const el = document.getElementById('backup-status');
+      if (el) el.textContent = msg || '';
+    }
+    function exportPersonalData() {
+      const payload = {
+        app: 'command-center',
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        data: {}
+      };
+      BACKUP_KEYS.forEach(k => {
+        const v = localStorage.getItem(k);
+        if (v !== null) payload.data[k] = v;
+      });
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const day = new Date().toISOString().slice(0, 10);
+      a.href = url;
+      a.download = 'command-center-backup-' + day + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setBackupStatus('Exported ' + Object.keys(payload.data).length + ' items · ' + day);
+    }
+    function importPersonalData(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const payload = JSON.parse(reader.result);
+          const data = payload.data || payload;
+          let n = 0;
+          BACKUP_KEYS.forEach(k => {
+            if (data[k] !== undefined && data[k] !== null) {
+              localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k]));
+              n++;
+            }
+          });
+          setBackupStatus('Imported ' + n + ' items — reloading…');
+          setTimeout(() => location.reload(), 600);
+        } catch (e) {
+          setBackupStatus('Import failed — use a Command Center backup JSON');
+          console.error(e);
+        }
+      };
+      reader.readAsText(file);
+    }
+    const btnExport = document.getElementById('btn-export-data');
+    const btnImport = document.getElementById('btn-import-data');
+    const importFile = document.getElementById('import-file');
+    if (btnExport) btnExport.addEventListener('click', () => {
+      exportPersonalData();
+      const menu = document.getElementById('more-menu');
+      if (menu) menu.classList.add('hidden');
+    });
+    if (btnImport && importFile) {
+      btnImport.addEventListener('click', () => importFile.click());
+      importFile.addEventListener('change', () => {
+        const f = importFile.files && importFile.files[0];
+        if (f) importPersonalData(f);
+        importFile.value = '';
+      });
+    }
+
     renderIdeas();
   </script>
 </body>
