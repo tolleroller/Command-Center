@@ -156,6 +156,7 @@
             Completed / archived <span id="project-archive-count" class="text-slate-400"></span>
           </button>
           <div id="projects-archive-list" class="hidden mt-2 space-y-2"></div>
+          <button type="button" id="projects-empty-archive" class="hidden text-[11px] text-red-500/80 mt-1.5 px-1 active:opacity-70">Empty archive</button>
         </div>
       </section>
 
@@ -1024,7 +1025,20 @@
       el.innerHTML = active.map(p => projectCard(p, false)).join('') || '<p class="text-sm text-slate-500">No active projects.</p>';
       if (archEl) archEl.innerHTML = archived.map(p => projectCard(p, true)).join('') || '<p class="text-xs text-slate-400 px-1">None</p>';
       if (cnt) cnt.textContent = archived.length ? '(' + archived.length + ')' : '';
+      const emptyBtn = document.getElementById('projects-empty-archive');
+      const list = document.getElementById('projects-archive-list');
+      if (emptyBtn && list) {
+        const listOpen = !list.classList.contains('hidden');
+        emptyBtn.classList.toggle('hidden', !listOpen || !archived.length);
+      }
     }
+    window.emptyArchiveProjects = () => {
+      const n = projects.filter(p => p.done).length;
+      if (!n) return;
+      if (!confirm('Permanently delete ' + n + ' completed project' + (n===1?'':'s') + '? This cannot be undone.')) return;
+      projects = projects.filter(p => !p.done);
+      saveProjects();
+    };
     window.toggleProjectDone = id => {
       projects = projects.map(p => p.id === id ? {...p, done: !p.done, pct: !p.done ? 100 : (p.pct === 100 ? 90 : p.pct)} : p);
       saveProjects();
@@ -1041,11 +1055,14 @@
     document.getElementById('projects-archive-toggle')?.addEventListener('click', () => {
       const list = document.getElementById('projects-archive-list');
       const chev = document.getElementById('projects-archive-chevron');
+      const emptyBtn = document.getElementById('projects-empty-archive');
       if (!list) return;
       const open = list.classList.contains('hidden');
       list.classList.toggle('hidden', !open);
       if (chev) chev.style.transform = open ? 'rotate(90deg)' : '';
+      if (emptyBtn) emptyBtn.classList.toggle('hidden', !open || !projects.filter(p => p.done).length);
     });
+    document.getElementById('projects-empty-archive')?.addEventListener('click', () => window.emptyArchiveProjects && window.emptyArchiveProjects());
     renderProjects();
     renderPulse();
 
