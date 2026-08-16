@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + focus-protocol + full-backup-v2 + robust-backup
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + aligned-margins + focus-protocol + full-backup-v2 + robust-backup
   Base: user-provided polish-c (features + smart import)
   Change: Full backup exports ALL theme + jp_* localStorage keys (Today's Focus, Projects+notes, Goals notes, Health notes, Lab ideas+next steps, content bodies, theme). Future-proof for any new editable keys. Safari↔PWA + version upgrades.
   Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3, jp_content_update_v1
@@ -128,9 +128,9 @@
 </div>
 </div>
 </header>
-<main class="flex-1 max-w-3xl mx-auto w-full px-2 py-4">
+<main class="flex-1 max-w-3xl mx-auto w-full px-0 py-4">
 <!-- HOME -->
-<section class="section active space-y-5" id="overview">
+<section class="section active space-y-5 px-3" id="overview">
 <div class="relative h-36 rounded-2xl overflow-hidden">
 <img alt="Mountains" class="img-cover" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&amp;q=80"/>
 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
@@ -174,7 +174,7 @@
 </div>
 </section>
 <!-- PROJECTS -->
-<section class="section space-y-5" id="projects">
+<section class="section space-y-5 px-3" id="projects">
         <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-lg font-semibold">Projects</h2>
@@ -207,7 +207,7 @@
         </div>
       </section>
 <!-- FINANCE -->
-<section class="section space-y-4" id="finance">
+<section class="section space-y-4 px-3" id="finance">
 <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Finance</h2><span class="text-xs text-slate-500" id="finance-label">Aug 15 snapshot</span></div>
 <div id="finance-body"><div class="card p-4 space-y-4">
   <div>
@@ -256,7 +256,7 @@
 </div></div>
 </section>
 <!-- NEWS -->
-<section class="section space-y-5" id="news">
+<section class="section space-y-5 px-3" id="news">
 <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">News Pulse</h2><span class="text-xs text-slate-500" id="news-label">Aug 15 · curated</span></div>
 <div id="news-body"><div class="news-categories">
   <div class="space-y-3 news-cat">
@@ -436,7 +436,7 @@
 </div></div>
 </section>
 <!-- ENTERTAINMENT -->
-<section class="section space-y-5" id="entertainment">
+<section class="section space-y-5 px-3" id="entertainment">
 <div class="flex items-center justify-between">
 <h2 class="text-lg font-semibold">Entertainment</h2>
 <span class="text-xs text-slate-500" id="entertainment-label">Matched to your taste</span>
@@ -604,10 +604,10 @@
 </div></div>
 </section>
 <!-- GOALS -->
-<section class="section space-y-4" id="goals">
+<section class="section space-y-4 px-3" id="goals">
 <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Goals</h2><span class="text-xs text-slate-500">Progress · bullets · next steps</span></div>
-<!-- Focus — indented card matching goal cards below -->
-<div class="card p-4">
+<!-- Focus — full width (match Health / Lab top blocks) -->
+<div class="w-full">
 <button type="button" id="focus-toggle" class="w-full text-left" aria-expanded="false">
 <div class="flex items-center justify-between gap-3 mb-3">
 <span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Focus</span>
@@ -757,7 +757,7 @@
 </div>
 </section>
 <!-- HEALTH -->
-<section class="section space-y-6" id="health">
+<section class="section space-y-6 px-3" id="health">
 <div>
 <h2 class="text-lg font-semibold">Health</h2>
 <p class="text-sm text-slate-500 mt-1">Body, mind, nature, and the habits that compound. Living repository — nothing has to die here.</p>
@@ -952,7 +952,7 @@
 </div>
 </section>
 <!-- LAB -->
-<section class="section space-y-6" id="lab">
+<section class="section space-y-6 px-3" id="lab">
 <div>
 <h2 class="text-lg font-semibold">Lab</h2>
 <p class="text-sm text-slate-500 mt-1">Living workshop for ideas. Dump the spark — get vision, synergies, and real paths back.</p>
