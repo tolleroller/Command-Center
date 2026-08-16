@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + focus-protocol + full-backup-v2
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + focus-protocol + full-backup-v2 + robust-backup
   Base: user-provided polish-c (features + smart import)
-  Change: Full backup v2 includes jp_content_update_v1 (News/Entertainment/Finance) for Safari↔PWA sync
-  Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3
+  Change: Full backup exports ALL theme + jp_* localStorage keys (Today's Focus, Projects+notes, Goals notes, Health notes, Lab ideas+next steps, content bodies, theme). Future-proof for any new editable keys. Safari↔PWA + version upgrades.
+  Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3, jp_content_update_v1
 -->
 <html class="h-full" lang="en">
 <head>
@@ -118,7 +118,7 @@
 <div class="hidden absolute right-0 mt-1 w-64 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg py-1 z-50" id="more-menu">
 <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-export-data" type="button">Export full backup</button>
 <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-import-smart" type="button">Import file</button>
-<p class="px-4 pt-1 pb-1 text-[10px] text-slate-400 leading-snug">Full backup = personal data + News / Entertainment / Finance content. Weekly content-only JSON also works.</p>
+<p class="px-4 pt-1 pb-1 text-[10px] text-slate-400 leading-snug">Full backup = all editable data (Today's Focus, Projects + notes, Goals notes, Health notes, Lab ideas + next steps, theme) + News/Entertainment/Finance. Use for Safari↔PWA or version upgrades. Weekly content-only JSON also works.</p>
 <p class="px-4 py-1.5 text-[11px] text-slate-500 border-t border-slate-100 dark:border-slate-800 min-h-[1.25rem]" id="backup-status"></p>
 </div>
 <input accept="application/json,.json" class="hidden" id="content-import-file" type="file"/>
@@ -1472,10 +1472,11 @@
       menu.addEventListener('click', (e) => e.stopPropagation());
     })();
 
-    // --- Full backup (personal data + News/Entertainment/Finance content) ---
-    // CONTENT_KEY included so Safari ↔ home-screen PWA can sync tab bodies
+    // --- Full backup (all editable personal data + content) ---
+    // Exports every theme + jp_* key so Today's Focus, Projects+notes, Goals/Health notes,
+    // Lab ideas+next steps, and any future editable keys persist across Safari↔PWA and version upgrades.
     const CONTENT_KEY = 'jp_content_update_v1';
-    const BACKUP_KEYS = [
+    const BACKUP_KEYS = [ // known keys (for docs + legacy looksBackup); export/import now dynamic
       'theme',
       'jp_command_todos',
       'jp_goal_bullets_v1',
@@ -1484,6 +1485,9 @@
       'jp_lab_ideas_v3',
       CONTENT_KEY
     ];
+    function isBackupKey(k) {
+      return k === 'theme' || (k && k.startsWith('jp_'));
+    }
     function setBackupStatus(msg) {
       const el = document.getElementById('backup-status');
       if (el) el.textContent = msg || '';
@@ -1495,10 +1499,14 @@
         exportedAt: new Date().toISOString(),
         data: {}
       };
-      BACKUP_KEYS.forEach(k => {
-        const v = localStorage.getItem(k);
-        if (v !== null) payload.data[k] = v;
-      });
+      // Dump every editable key present in localStorage (future-proof)
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (isBackupKey(k)) {
+          const v = localStorage.getItem(k);
+          if (v !== null) payload.data[k] = v;
+        }
+      }
       const hasContent = !!payload.data[CONTENT_KEY];
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -1513,6 +1521,19 @@
       const n = Object.keys(payload.data).length;
       setBackupStatus('Exported ' + n + ' items' + (hasContent ? ' (incl. content)' : '') + ' · ' + day);
     }
+    function restoreBackupData(data) {
+      let n = 0;
+      let hadContent = false;
+      Object.keys(data || {}).forEach(k => {
+        if (!isBackupKey(k)) return;
+        if (data[k] !== undefined && data[k] !== null) {
+          localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k]));
+          n++;
+          if (k === CONTENT_KEY) hadContent = true;
+        }
+      });
+      return { n, hadContent };
+    }
     function importPersonalData(file) {
       if (!file) return;
       const reader = new FileReader();
@@ -1520,15 +1541,7 @@
         try {
           const payload = JSON.parse(reader.result);
           const data = payload.data || payload;
-          let n = 0;
-          let hadContent = false;
-          BACKUP_KEYS.forEach(k => {
-            if (data[k] !== undefined && data[k] !== null) {
-              localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k]));
-              n++;
-              if (k === CONTENT_KEY) hadContent = true;
-            }
-          });
+          const { n, hadContent } = restoreBackupData(data);
           setBackupStatus('Restored ' + n + ' items' + (hadContent ? ' + content' : '') + ' — reloading…');
           setTimeout(() => location.reload(), 600);
         } catch (e) {
@@ -1623,19 +1636,11 @@
             if (menu) menu.classList.add('hidden');
             return;
           }
-          // Full backup: personal keys and/or content body
+          // Full backup: any theme / jp_* personal keys and/or content body
           const data = payload.data || payload;
-          const looksBackup = BACKUP_KEYS.some(k => data[k] !== undefined && data[k] !== null);
+          const looksBackup = Object.keys(data || {}).some(k => isBackupKey(k) && data[k] != null) || BACKUP_KEYS.some(k => data[k] != null);
           if (looksBackup || payload.app === 'command-center') {
-            let n = 0;
-            let hadContent = false;
-            BACKUP_KEYS.forEach(k => {
-              if (data[k] !== undefined && data[k] !== null) {
-                localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k]));
-                n++;
-                if (k === CONTENT_KEY) hadContent = true;
-              }
-            });
+            const { n, hadContent } = restoreBackupData(data);
             setBackupStatus('Full backup restored · ' + n + ' items' + (hadContent ? ' + content' : '') + ' — reloading…');
             setTimeout(() => location.reload(), 600);
             return;
