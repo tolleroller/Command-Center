@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + projects-spacing + news-gap-v2
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline
   Base: user-provided polish-c (features + smart import)
   Change: Projects section vertical spacing only — not a global redesign
   Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3
@@ -69,7 +69,12 @@
     input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 9999px; background: #334155; outline: none; width: 100%; }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #6366f1; cursor: pointer; box-shadow: 0 0 0 4px rgba(99,102,241,0.25); }
     .news-card { @apply p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700/40; }
-    /* Force inter-category gap in News (Safari + injected HTML safe) */
+    /* Force inter-category gap in News (Safari-safe spacer + margin fallback) */
+    #news-body .news-cat-spacer {
+      height: 2.5rem !important;
+      flex-shrink: 0;
+      display: block;
+    }
     #news-body .news-categories > .news-cat + .news-cat,
     #news-body .news-categories > .space-y-3 + .space-y-3,
     #news-body > div > .space-y-3 + .space-y-3 {
@@ -272,7 +277,8 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
+  <div class="news-cat-spacer" style="height:2.5rem;flex-shrink:0" aria-hidden="true"></div>
+  <div class="space-y-3 news-cat">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Elon · SpaceX · Tesla</span>
     </div>
@@ -296,7 +302,8 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
+  <div class="news-cat-spacer" style="height:2.5rem;flex-shrink:0" aria-hidden="true"></div>
+  <div class="space-y-3 news-cat">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300">Tech &amp; AI</span>
     </div>
@@ -320,7 +327,8 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
+  <div class="news-cat-spacer" style="height:2.5rem;flex-shrink:0" aria-hidden="true"></div>
+  <div class="space-y-3 news-cat">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300">Science</span>
     </div>
@@ -344,7 +352,8 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
+  <div class="news-cat-spacer" style="height:2.5rem;flex-shrink:0" aria-hidden="true"></div>
+  <div class="space-y-3 news-cat">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300">Trump Admin</span>
     </div>
@@ -368,7 +377,8 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
+  <div class="news-cat-spacer" style="height:2.5rem;flex-shrink:0" aria-hidden="true"></div>
+  <div class="space-y-3 news-cat">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">UAP / UFOs</span>
     </div>
@@ -392,7 +402,8 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
+  <div class="news-cat-spacer" style="height:2.5rem;flex-shrink:0" aria-hidden="true"></div>
+  <div class="space-y-3 news-cat">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300">Trending</span>
     </div>
@@ -425,72 +436,165 @@
 <span class="text-xs text-slate-500" id="entertainment-label">Matched to your taste</span>
 </div>
 <div id="entertainment-body"><div class="space-y-5">
-  <div>
-    <div class="flex items-center gap-2 mb-2">
-      <span class="cat-pill bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300">Coming Soon</span>
-    </div>
-    <div class="space-y-3">
-      <div class="card p-3.5 overflow-hidden">
-        <div class="flex gap-3">
-          <img alt="Lanterns" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=300&amp;q=80"/>
-          <div class="min-w-0 flex-1">
-            <div class="flex justify-between items-start gap-2">
-              <p class="font-semibold text-sm">Lanterns</p>
-              <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 shrink-0">HBO</span>
+<!-- Coming Soon -->
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="cat-pill bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300">Coming Soon</span>
+          </div>
+          <div class="space-y-3">
+            <div class="card p-3.5 overflow-hidden">
+              <div class="flex gap-3">
+                <img alt="Lanterns" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=300&q=80"/>
+                <div class="min-w-0 flex-1">
+                  <div class="flex justify-between items-start gap-2">
+                    <p class="font-semibold text-sm">Lanterns</p>
+                    <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 shrink-0">Max</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">HBO · Premieres Aug 16</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Green Lantern detective noir. Prestige DC tone — fits your smart-thriller lane.</p>
+                </div>
+              </div>
             </div>
-            <p class="text-xs text-slate-500 mt-0.5">HBO / Max · Aug 16 premiere</p>
-            <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Green Lantern as True Detective–style mystery. Kyle Chandler + Aaron Pierre. High-signal prestige sci-fi / DC lane.</p>
+            <div class="card p-3.5">
+              <div class="flex justify-between items-start gap-3">
+                <div>
+                  <p class="font-semibold text-sm">Dune: Part Three</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Theatrical · Expected 2026/27</p>
+                  <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">Epic scale + philosophical weight. Sits in the same lane as your high ratings for prestige world-building and character-driven drama.</p>
+                </div>
+                <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 shrink-0">Theater</span>
+              </div>
+            </div>
+            <div class="card p-3.5">
+              <div class="flex justify-between items-start gap-3">
+                <div>
+                  <p class="font-semibold text-sm">Andor Season 2 follow-ups / Star Wars prestige</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Disney+ · Ongoing pipeline</p>
+                  <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">You already rate the serious, grounded side of this universe highly. More adult-oriented entries stay in your wheelhouse.</p>
+                </div>
+                <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 shrink-0">Disney+</span>
+              </div>
+            </div>
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/vOYfRZ0NpUK5hG2CB2dJFnYJlGe.jpg" alt="Yellowstone" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0 flex-1">
+                  <div class="flex justify-between items-start gap-2">
+                    <p class="font-semibold text-sm">Yellowstone universe extensions</p>
+                    <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 shrink-0">Paramount+</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-0.5">Multiple spin-offs in various stages</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">You gave Yellowstone and 1883 perfect 10s. The frontier / family-power lane is clearly one of your strongest.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="card p-3.5 overflow-hidden">
-        <div class="flex gap-3">
-          <img alt="Lioness" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&amp;q=80"/>
-          <div class="min-w-0 flex-1">
-            <div class="flex justify-between items-start gap-2">
-              <p class="font-semibold text-sm">Lioness S3</p>
-              <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 shrink-0">Paramount+</span>
+
+        <!-- Movies & TV for you -->
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Movies & TV · For You</span>
+          </div>
+          <div class="space-y-3">
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/lz8vNyXeidqqOdJW9ZjnDAMb5Vr.jpg" alt="Sicario" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm">Sicario (and the sequel)</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Multiple services</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Quiet, morally gray, controlled tension. Sits next to your Bourne / Night Agent / Jack Reacher 10s.</p>
+                </div>
+              </div>
             </div>
-            <p class="text-xs text-slate-500 mt-0.5">Paramount+ · streaming now</p>
-            <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Taylor Sheridan spy drama. Zoe Saldaña returns — smart-thriller muscle that fits the prestige lane.</p>
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/eKfVzzEazSIjJMrw9ADa2x8ksLz.jpg" alt="The Bear" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm">The Bear</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Hulu / Disney+</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Character intensity + found-family pressure. Matches the prestige drama side of your list.</p>
+                </div>
+              </div>
+            </div>
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/dC7jkj2g1aU8sxKqM6D4g44xA6w.jpg" alt="True Detective" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm">True Detective (S1)</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Max / HBO</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">You rated it 9. Philosophical + procedural blend — strong atmosphere when you want it.</p>
+                </div>
+              </div>
+            </div>
+            <div class="card p-3 overflow-hidden">
+              <div class="flex gap-3">
+                <img src="https://image.tmdb.org/t/p/w185/fa0RDkAlCec0STeMNAhPaF89q6U.jpg" alt="There Will Be Blood" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
+                <div class="min-w-0">
+                  <p class="font-semibold text-sm">There Will Be Blood</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Multiple services</p>
+                  <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">You rated it 9. Power + landscape + character — aligns with your western and prestige leanings.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div>
-    <div class="flex items-center gap-2 mb-2">
-      <span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Worth a look</span>
-    </div>
-    <div class="space-y-3">
-      <div class="card p-3.5 overflow-hidden">
-        <div class="flex gap-3">
-          <img alt="Silo" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=300&amp;q=80"/>
-          <div class="min-w-0 flex-1">
-            <div class="flex justify-between items-start gap-2">
-              <p class="font-semibold text-sm">Silo</p>
-              <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 shrink-0">Apple TV</span>
+
+        <!-- Streaming synergy -->
+        <div class="card p-4 border-l-4 border-l-indigo-500">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium mb-1">Streaming Synergy</p>
+          <p class="text-sm font-medium">Services that already carry a lot of your 10s / 9s</p>
+          <ul class="mt-2 space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
+            <li>• <span class="font-medium text-slate-800 dark:text-slate-200">Max / HBO</span> — Chernobyl, True Detective, Band of Brothers adjacent, high-end drama</li>
+            <li>• <span class="font-medium text-slate-800 dark:text-slate-200">Paramount+</span> — Yellowstone universe, 1883, strong western / frontier catalog</li>
+            <li>• <span class="font-medium text-slate-800 dark:text-slate-200">Netflix</span> — Night Agent, several of your thriller and limited-series 10s</li>
+            <li>• <span class="font-medium text-slate-800 dark:text-slate-200">Disney+</span> — Andor-level prestige + selective classics</li>
+          </ul>
+        </div>
+
+        <!-- Music -->
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="cat-pill bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Music · Your Lane</span>
+          </div>
+          <div class="space-y-3">
+            <div class="card p-3.5">
+              <p class="font-semibold text-sm">Keep feeding the 2026 favorites list</p>
+              <p class="text-xs text-slate-500 mt-0.5">Your current core is strong</p>
+              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">Bon Iver, Chris Staples, Gregory Alan Isakov, Anna Graves, Sylvan Esso, Caiola, Mazzy Star territory. The Indie Folk / Folk mixes are correctly tuned.</p>
             </div>
-            <p class="text-xs text-slate-500 mt-0.5">Apple TV+ · episodes ongoing</p>
-            <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Contained dystopia, strong craft. Selective sci-fi that rewards attention without pure spectacle.</p>
+            <div class="card p-3.5">
+              <p class="font-semibold text-sm">Artists to explore next in the same pocket</p>
+              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">Iron & Wine, The Paper Kites, Lord Huron, Noah Kahan (selective), The Tallest Man on Earth, José González, Fleet Foxes deep cuts. All sit adjacent to what you already play heavily.</p>
+            </div>
+            <div class="card p-3.5">
+              <p class="font-semibold text-sm">When you want a slight left turn</p>
+              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">More atmospheric electronic that still has heart (select Tycho, some Bonobo, or the chill daylist energy you already use) or classic singer-songwriter (deeper Dylan, early Springsteen, Gillian Welch).</p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="card p-3.5 overflow-hidden">
-        <div class="flex gap-3">
-          <img alt="Music" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&amp;q=80"/>
-          <div class="min-w-0 flex-1">
-            <div class="flex justify-between items-start gap-2">
-              <p class="font-semibold text-sm">Indie folk / Americana</p>
-              <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 shrink-0">Music</span>
+
+        <!-- Visual mood -->
+        <div>
+          <p class="text-xs font-medium text-slate-500 mb-2 uppercase tracking-wider">Mood</p>
+          <div class="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
+            <div class="flex-none w-36 h-24 rounded-xl overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80" class="img-cover" alt="Concert light" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <p class="absolute bottom-1.5 left-2 text-white text-[11px] font-medium">Live</p>
             </div>
-            <p class="text-xs text-slate-500 mt-0.5">Playlist lane</p>
-            <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Bon Iver, Gregory Alan Isakov, Staples — keep the quiet production soundtrack on rotation.</p>
+            <div class="flex-none w-36 h-24 rounded-xl overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80" class="img-cover" alt="Cinema" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <p class="absolute bottom-1.5 left-2 text-white text-[11px] font-medium">Cinema</p>
+            </div>
+            <div class="flex-none w-36 h-24 rounded-xl overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80" class="img-cover" alt="Headphones" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <p class="absolute bottom-1.5 left-2 text-white text-[11px] font-medium">Alone</p>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 </div></div>
 </section>
 <!-- GOALS -->
