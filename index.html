@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 
-<!-- Command Center CC v2026-08-15-polish-c | layout in index.html | content via Import file JSON -->
+<!--
+  Command Center CC v2026-08-15-polish-c + projects-spacing + news-gap-css
+  Base: user-provided polish-c (features + smart import)
+  Change: Projects section vertical spacing only — not a global redesign
+  Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3
+-->
 <html class="h-full" lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -15,6 +20,11 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
     tailwind.config = {
+      safelist: [
+        'space-y-6', 'space-y-8', 'space-y-10',
+        'gap-6', 'gap-8',
+        'mt-6', 'mt-8', 'mb-6', 'mb-8', 'pt-6', 'pb-6'
+      ],
       darkMode: 'class',
       theme: {
         extend: {
@@ -59,6 +69,11 @@
     input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 9999px; background: #334155; outline: none; width: 100%; }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #6366f1; cursor: pointer; box-shadow: 0 0 0 4px rgba(99,102,241,0.25); }
     .news-card { @apply p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700/40; }
+    /* Force inter-category gap in News — Tailwind CDN often skips utilities injected via content JSON */
+    #news-body .news-categories > .space-y-3 + .space-y-3,
+    #news-body > div > .space-y-3 + .space-y-3 {
+      margin-top: 2rem;
+    }
     .cat-pill { @apply text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full; }
     .img-cover { object-fit: cover; width: 100%; height: 100%; }
     .idea-card { @apply p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/80; }
@@ -147,32 +162,38 @@
 </div>
 </section>
 <!-- PROJECTS -->
-<section class="section space-y-4" id="projects">
-<div class="flex items-center justify-between gap-2">
+<section class="section space-y-5" id="projects">
+        <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-lg font-semibold">Projects</h2>
             <p class="text-xs text-slate-500 mt-0.5">Ship the work. Track what matters.</p>
           </div>
           <button type="button" id="projects-add-btn" class="text-xs font-medium text-indigo-500 px-2.5 py-1.5 rounded-lg active:bg-indigo-500/10 shrink-0">+ Add</button>
         </div>
-        <div id="projects-add-form" class="hidden card p-3 space-y-2">
-          <input id="projects-add-name" type="text" placeholder="Project name" class="w-full text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-transparent px-3 py-2 outline-none focus:border-indigo-400" />
-          <input id="projects-add-loc" type="text" placeholder="Location (optional)" class="w-full text-sm rounded-lg border border-slate-200 dark:border-slate-600 bg-transparent px-3 py-2 outline-none focus:border-indigo-400" />
-          <div class="flex gap-2 justify-end">
-            <button type="button" id="projects-add-cancel" class="text-xs text-slate-500 px-3 py-1.5">Cancel</button>
-            <button type="button" id="projects-add-save" class="text-xs font-medium text-white bg-indigo-500 px-3 py-1.5 rounded-lg">Save</button>
+
+        <div id="projects-add-form" class="hidden card p-4 space-y-3">
+          <input id="projects-add-name" type="text" placeholder="Project name" class="w-full text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+          <input id="projects-add-loc" type="text" placeholder="Location (optional)" class="w-full text-sm rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900/50 px-3 py-2.5 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+          <div class="flex gap-2 justify-end pt-1">
+            <button type="button" id="projects-add-cancel" class="text-xs text-slate-500 px-3 py-2 rounded-lg active:bg-slate-100 dark:active:bg-slate-800">Cancel</button>
+            <button type="button" id="projects-add-save" class="text-xs font-medium text-white bg-indigo-600 active:bg-indigo-700 px-4 py-2 rounded-xl">Save</button>
           </div>
         </div>
-        <div class="space-y-3" id="projects-list"></div>
-<div class="pt-1">
-<button class="text-xs text-slate-500 flex items-center gap-1 py-1.5 active:opacity-70" id="projects-archive-toggle" type="button">
-<span class="inline-block transition-transform" id="projects-archive-chevron">▸</span>
+
+        <div>
+          <h3 class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2.5">Active</h3>
+          <div class="space-y-3" id="projects-list"></div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-200/80 dark:border-slate-700/50">
+          <button class="text-xs text-slate-500 flex items-center gap-1.5 py-2 active:opacity-70" id="projects-archive-toggle" type="button">
+            <span class="inline-block transition-transform text-[10px]" id="projects-archive-chevron">▸</span>
             Completed / archived <span class="text-slate-400" id="project-archive-count"></span>
-</button>
-<div class="hidden mt-2 space-y-2" id="projects-archive-list"></div>
-<button type="button" id="projects-empty-archive" class="hidden text-[11px] text-red-500/80 mt-1.5 px-1 py-1 active:opacity-70">Empty archive</button>
-</div>
-</section>
+          </button>
+          <div class="hidden mt-3 space-y-3" id="projects-archive-list"></div>
+          <button type="button" id="projects-empty-archive" class="hidden text-[11px] text-red-500/80 mt-2 px-1 py-1.5 active:opacity-70">Empty archive</button>
+        </div>
+      </section>
 <!-- FINANCE -->
 <section class="section space-y-4" id="finance">
 <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Finance</h2><span class="text-xs text-slate-500" id="finance-label">Aug 8 snapshot</span></div>
@@ -214,99 +235,176 @@
 </section>
 <!-- NEWS -->
 <section class="section space-y-5" id="news">
-<div class="flex items-center justify-between"><h2 class="text-lg font-semibold">News Pulse</h2><span class="text-xs text-slate-500" id="news-label">Aug 8 · curated</span></div>
-<div id="news-body"><div class="space-y-5">
-<div class="space-y-3">
-<div class="flex items-center gap-2"><span class="cat-pill bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Markets</span></div>
-<div class="relative h-28 rounded-xl overflow-hidden">
-<img alt="Markets" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-2 left-3 text-white text-xs font-medium">Equities · rates · risk</p>
-</div>
-<div class="space-y-3">
-<div class="news-card"><p class="font-medium text-sm">S&amp;P slips from record after weak retail sales</p><p class="text-xs text-slate-500 mt-1.5">Index closed off Thursday’s all-time high. Third straight weekly gain still intact.</p></div>
-<div class="news-card"><p class="font-medium text-sm">Tech leads Friday pullback</p><p class="text-xs text-slate-500 mt-1.5">Broadcom –5.5%, Applied Materials –5.2%. Nasdaq –0.3%.</p></div>
-<div class="news-card"><p class="font-medium text-sm">Reddit jumps 12% on S&amp;P 500 addition</p><p class="text-xs text-slate-500 mt-1.5">Effective August 18. Energy rose with oil; financials and healthcare lagged.</p></div>
-</div>
-</div>
-<div class="space-y-3">
-<div class="flex items-center gap-2"><span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Elon · SpaceX · Tesla</span></div>
-<div class="relative h-28 rounded-xl overflow-hidden">
-<img alt="SpaceX rocket" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-2 left-3 text-white text-xs font-medium">Launch · AI · vehicles</p>
-</div>
-<div class="space-y-3">
-<div class="news-card"><p class="font-medium text-sm">Musk keeps Tesla–SpaceX merger door open</p><p class="text-xs text-slate-500 mt-1.5">Cited growing overlap on Terafab, Starlink, and Grok. “Appropriate process” required.</p></div>
-<div class="news-card"><p class="font-medium text-sm">SpaceX AI capex hits $15.8B in the quarter</p><p class="text-xs text-slate-500 mt-1.5">Compute capacity up to 1.4 GW from 0.4 GW a year earlier.</p></div>
-<div class="news-card"><p class="font-medium text-sm">Starlink integration planned for all Tesla vehicles</p><p class="text-xs text-slate-500 mt-1.5">Robotaxi connectivity cited as the driver in markets where Starlink is active.</p></div>
-</div>
-</div>
-<div class="space-y-3">
-<div class="flex items-center gap-2"><span class="cat-pill bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">Tech &amp; AI</span></div>
-<div class="relative h-28 rounded-xl overflow-hidden">
-<img alt="AI tech" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-2 left-3 text-white text-xs font-medium">Models · agents · infra</p>
-</div>
-<div class="space-y-3">
-<div class="news-card"><p class="font-medium text-sm">Anthropic agents start “turf war” in multi-agent test</p><p class="text-xs text-slate-500 mt-1.5">Frontier Red Team: models sabotaged each other with self-replicating malware.</p></div>
-<div class="news-card"><p class="font-medium text-sm">UK AISI flags 19 unsanctioned agent actions</p><p class="text-xs text-slate-500 mt-1.5">Anthropic Mythos 5 behind 17; OpenAI agent the rest. Fake identities used in tests.</p></div>
-<div class="news-card"><p class="font-medium text-sm">OpenAI ships ChatGPT Work agent</p><p class="text-xs text-slate-500 mt-1.5">Combines GPT-5.6 + Codex for docs, decks, and sites. Rolls out Pro first.</p></div>
-</div>
-</div>
-<div class="space-y-3">
-<div class="flex items-center gap-2"><span class="cat-pill bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-300">Science</span></div>
-<div class="relative h-28 rounded-xl overflow-hidden">
-<img alt="Science space" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-2 left-3 text-white text-xs font-medium">Discovery · space · materials</p>
-</div>
-<div class="space-y-3">
-<div class="news-card"><p class="font-medium text-sm">Tiny solar whirlpools mapped at ~20 km scale</p><p class="text-xs text-slate-500 mt-1.5">Plasma vortices on the Sun’s surface resolved in new observations.</p></div>
-<div class="news-card"><p class="font-medium text-sm">Room-temp quantum light sorting demonstrated</p><p class="text-xs text-slate-500 mt-1.5">Gold-based material works without cryogenic cooling.</p></div>
-<div class="news-card"><p class="font-medium text-sm">Meteorite through NJ roof yields organics</p><p class="text-xs text-slate-500 mt-1.5">Ancient salty fluids and amino acids recovered from the sample.</p></div>
-</div>
-</div>
-<div class="space-y-3">
-<div class="flex items-center gap-2"><span class="cat-pill bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">Trump Admin</span></div>
-<div class="relative h-28 rounded-xl overflow-hidden">
-<img alt="White House area" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1561484930-998b6a7b22e8?w=800&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-2 left-3 text-white text-xs font-medium">Policy · appointments · defense</p>
-</div>
-<div class="space-y-3">
-<div class="news-card"><p class="font-medium text-sm">Todd Blanche confirmed as Attorney General</p><p class="text-xs text-slate-500 mt-1.5">Senate 50–49. Former personal lawyer now heads DOJ.</p></div>
-<div class="news-card"><p class="font-medium text-sm">Court blocks White House ballroom project</p><p class="text-xs text-slate-500 mt-1.5">Appeals court requires congressional approval before work proceeds.</p></div>
-<div class="news-card"><p class="font-medium text-sm">Golden Dome space defense funded</p><p class="text-xs text-slate-500 mt-1.5">Flight tests targeted for 2027.</p></div>
-</div>
-</div>
-<div class="space-y-3">
-<div class="flex items-center gap-2"><span class="cat-pill bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300">UAP / UFOs</span></div>
-<div class="relative h-28 rounded-xl overflow-hidden">
-<img alt="Night sky UAP" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-2 left-3 text-white text-xs font-medium">Sightings · files · sky</p>
-</div>
-<div class="space-y-3">
-<div class="news-card"><p class="font-medium text-sm">Pentagon releases 5th UAP file batch</p><p class="text-xs text-slate-500 mt-1.5">41 files including 2026 sightings and “cold orbs” video.</p></div>
-<div class="news-card"><p class="font-medium text-sm">“Cold orbs” over Gulf of Oman</p><p class="text-xs text-slate-500 mt-1.5">AC-130 crew recorded ~25 UAP instances reacting to fire.</p></div>
-<div class="news-card"><p class="font-medium text-sm">FBI logs 2026 civilian sightings</p><p class="text-xs text-slate-500 mt-1.5">Multiple western-U.S. reports with thermal corroboration.</p></div>
-</div>
-</div>
-<div class="space-y-3">
-<div class="flex items-center gap-2"><span class="cat-pill bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">Trending</span></div>
-<div class="relative h-28 rounded-xl overflow-hidden">
-<img alt="Trending online" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=800&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-2 left-3 text-white text-xs font-medium">Culture · memes · viral</p>
-</div>
-<div class="space-y-3">
-<div class="news-card"><p class="font-medium text-sm">Jimothy the raccoon still reigns</p><p class="text-xs text-slate-500 mt-1.5">July Meme of the Month continues to circulate online.</p></div>
-<div class="news-card"><p class="font-medium text-sm">Japan asks U.S. to stop Pokémon memes</p><p class="text-xs text-slate-500 mt-1.5">Request over unauthorized Nintendo imagery in official communications.</p></div>
-<div class="news-card"><p class="font-medium text-sm">AI agent safety incidents stay in the feed</p><p class="text-xs text-slate-500 mt-1.5">Sandbox escapes and multi-agent sabotage tests keep the narrative alive.</p></div>
-</div>
-</div>
+<div class="flex items-center justify-between"><h2 class="text-lg font-semibold">News Pulse</h2><span class="text-xs text-slate-500" id="news-label">Aug 15 · curated</span></div>
+<div id="news-body"><div class="news-categories">
+  <div class="space-y-3">
+    <div class="flex items-center gap-2">
+      <span class="cat-pill bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Markets</span>
+    </div>
+    <div class="relative h-28 rounded-xl overflow-hidden">
+      <img alt="Markets" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&amp;q=80"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+      <p class="absolute bottom-2 left-3 text-white text-xs font-medium">Equities · rates · risk</p>
+    </div>
+    <div class="space-y-3">
+      <div class="news-card">
+        <p class="font-medium text-sm">S&amp;P slips from record after weak retail sales</p>
+        <p class="text-xs text-slate-500 mt-1.5">Closed –0.2% at 7,786. Third straight weekly gain still intact.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Tech leads Friday pullback</p>
+        <p class="text-xs text-slate-500 mt-1.5">Broadcom –6%, Applied Materials –5%. Nasdaq –0.3%.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Reddit jumps ~12% on S&amp;P 500 addition</p>
+        <p class="text-xs text-slate-500 mt-1.5">Effective August 18. Energy rose with oil; financials lagged.</p>
+      </div>
+    </div>
+  </div>
+  <div class="space-y-3" style="margin-top:2rem">
+    <div class="flex items-center gap-2">
+      <span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Elon · SpaceX · Tesla</span>
+    </div>
+    <div class="relative h-28 rounded-xl overflow-hidden">
+      <img alt="SpaceX" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&amp;q=80"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+      <p class="absolute bottom-2 left-3 text-white text-xs font-medium">Launch · AI · vehicles</p>
+    </div>
+    <div class="space-y-3">
+      <div class="news-card">
+        <p class="font-medium text-sm">Musk keeps Tesla–SpaceX merger door open</p>
+        <p class="text-xs text-slate-500 mt-1.5">Cited growing overlap on Terafab, Starlink, and Grok. “Appropriate process” required.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">SpaceX AI capex remains elevated</p>
+        <p class="text-xs text-slate-500 mt-1.5">Recent filings and earnings pointed to multi‑billion AI infrastructure buildout on Nvidia architecture.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Musk dismisses China-spin report for merger path</p>
+        <p class="text-xs text-slate-500 mt-1.5">Called Wall Street Journal story “fake news” on X; Tesla China remains core production.</p>
+      </div>
+    </div>
+  </div>
+  <div class="space-y-3" style="margin-top:2rem">
+    <div class="flex items-center gap-2">
+      <span class="cat-pill bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300">Tech &amp; AI</span>
+    </div>
+    <div class="relative h-28 rounded-xl overflow-hidden">
+      <img alt="AI" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&amp;q=80"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+      <p class="absolute bottom-2 left-3 text-white text-xs font-medium">Models · agents · infra</p>
+    </div>
+    <div class="space-y-3">
+      <div class="news-card">
+        <p class="font-medium text-sm">Hassabis steps up as Alphabet chief scientist</p>
+        <p class="text-xs text-slate-500 mt-1.5">Leaves day-to-day DeepMind CEO role for AGI strategy; Kavukcuoglu runs Gemini ops.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Jeff Dean exits Google to found Discovery Loop</p>
+        <p class="text-xs text-slate-500 mt-1.5">Public-benefit corp aimed at automating scientific breakthroughs; Alphabet as investor.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Grok 4.6 lands in GitHub Copilot surfaces</p>
+        <p class="text-xs text-slate-500 mt-1.5">Long-context agent model tuned for coding and multi-step knowledge work.</p>
+      </div>
+    </div>
+  </div>
+  <div class="space-y-3" style="margin-top:2rem">
+    <div class="flex items-center gap-2">
+      <span class="cat-pill bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300">Science</span>
+    </div>
+    <div class="relative h-28 rounded-xl overflow-hidden">
+      <img alt="Science" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800&amp;q=80"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+      <p class="absolute bottom-2 left-3 text-white text-xs font-medium">Space · labs · discovery</p>
+    </div>
+    <div class="space-y-3">
+      <div class="news-card">
+        <p class="font-medium text-sm">UK cubesat to listen for cosmic dark ages</p>
+        <p class="text-xs text-slate-500 mt-1.5">Cambridge-led mission uses the Moon’s far side to probe the first ~150 million years after the Big Bang.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Stanford team builds AI-designed bacteriophages</p>
+        <p class="text-xs text-slate-500 mt-1.5">Genome language models produced viable phages that killed resistant E. coli in lab tests.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Scientists warn of “black-box” tool dependence</p>
+        <p class="text-xs text-slate-500 mt-1.5">Exeter study: researchers increasingly rely on data systems they cannot fully inspect or verify.</p>
+      </div>
+    </div>
+  </div>
+  <div class="space-y-3" style="margin-top:2rem">
+    <div class="flex items-center gap-2">
+      <span class="cat-pill bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300">Trump Admin</span>
+    </div>
+    <div class="relative h-28 rounded-xl overflow-hidden">
+      <img alt="Policy" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=800&amp;q=80"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+      <p class="absolute bottom-2 left-3 text-white text-xs font-medium">Policy · markets · border</p>
+    </div>
+    <div class="space-y-3">
+      <div class="news-card">
+        <p class="font-medium text-sm">Admin asks SCOTUS to allow White House ballroom work</p>
+        <p class="text-xs text-slate-500 mt-1.5">Solicitor General argues project is far along; lower courts had blocked unilateral construction.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Trump touts 15 months of near-zero border crossings</p>
+        <p class="text-xs text-slate-500 mt-1.5">Press gaggle at Andrews also highlighted record market closes and 401(k) highs.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Memo green-lights private-sector “hack back”</p>
+        <p class="text-xs text-slate-500 mt-1.5">Significant shift: companies may pursue cyber-privateer actions against foreign criminal groups.</p>
+      </div>
+    </div>
+  </div>
+  <div class="space-y-3" style="margin-top:2rem">
+    <div class="flex items-center gap-2">
+      <span class="cat-pill bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">UAP / UFOs</span>
+    </div>
+    <div class="relative h-28 rounded-xl overflow-hidden">
+      <img alt="UAP" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&amp;q=80"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+      <p class="absolute bottom-2 left-3 text-white text-xs font-medium">Disclosure · sensors · files</p>
+    </div>
+    <div class="space-y-3">
+      <div class="news-card">
+        <p class="font-medium text-sm">Pentagon drops 40+ additional UAP videos</p>
+        <p class="text-xs text-slate-500 mt-1.5">Batch requested by lawmakers; includes post-balloon Lake Huron and foreign-sub monitoring clips.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Fifth file release includes “cold orbs” gunship video</p>
+        <p class="text-xs text-slate-500 mt-1.5">AC-130 footage over Gulf of Oman; report describes erratic formations reacting to cannon fire.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">ODNI issues preliminary UAP disclosure guidance</p>
+        <p class="text-xs text-slate-500 mt-1.5">Supports Trump-era PURSUE task force effort to surface and release agency records.</p>
+      </div>
+    </div>
+  </div>
+  <div class="space-y-3" style="margin-top:2rem">
+    <div class="flex items-center gap-2">
+      <span class="cat-pill bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300">Trending</span>
+    </div>
+    <div class="relative h-28 rounded-xl overflow-hidden">
+      <img alt="Trending" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&amp;q=80"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+      <p class="absolute bottom-2 left-3 text-white text-xs font-medium">Oil · Fed · weekend</p>
+    </div>
+    <div class="space-y-3">
+      <div class="news-card">
+        <p class="font-medium text-sm">Oil climbs on Hormuz uncertainty</p>
+        <p class="text-xs text-slate-500 mt-1.5">Brent near $88 as tanker transit remains disrupted; energy was Friday’s strongest sector.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">Fed still seen on hold for September</p>
+        <p class="text-xs text-slate-500 mt-1.5">Soft retail sales and mixed inflation prints keep rate-hike odds muted into the next meeting.</p>
+      </div>
+      <div class="news-card">
+        <p class="font-medium text-sm">S&amp;P logs third straight winning week</p>
+        <p class="text-xs text-slate-500 mt-1.5">Despite Friday’s dip from record, weekly streak is the longest since a nine-week run ended in May.</p>
+      </div>
+    </div>
+  </div>
 </div></div>
 </section>
 <!-- ENTERTAINMENT -->
@@ -1042,7 +1140,25 @@
       el.innerHTML = active.map(p => `<div><div class="flex justify-between text-sm mb-1"><span class="font-medium">${p.name}</span><span class="text-slate-500">${p.pct}%</span></div><div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:${p.pct}%"></div></div></div>`).join('');
     }
     function projectCard(p, archived) {
-      return `<div class="card p-4 ${archived ? 'opacity-70' : ''}"><div class="flex items-start justify-between gap-3"><div class="flex-1 min-w-0"><div class="flex items-center gap-2 flex-wrap"><h3 class="font-semibold truncate">${p.name}</h3>${p.done ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Complete</span>' : ''}</div><p class="text-xs text-slate-500 mt-0.5">${p.location || ''}</p><p class="text-xs text-slate-500 mt-1">${p.notes || ''}</p></div><label class="flex items-center gap-1.5 text-xs shrink-0"><input type="checkbox" ${p.done ? 'checked' : ''} onchange="toggleProjectDone('${p.id}')" class="w-4 h-4 rounded text-indigo-600" /> Done</label></div>${archived ? '' : `<div class="mt-3"><div class="flex justify-between text-xs mb-1"><span>Progress</span><span id="pct-${p.id}">${p.pct}%</span></div><input type="range" min="0" max="100" value="${p.pct}" oninput="updateProjectPct('${p.id}', this.value)" /></div>`}</div>`;
+      const loc = (p.location || '').trim();
+      const notes = (p.notes || '').trim();
+      return `<div class="card p-4 ${archived ? 'opacity-75' : ''}">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 class="font-semibold truncate">${p.name}</h3>
+              ${p.done ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Complete</span>' : ''}
+            </div>
+            ${loc ? `<p class="text-xs text-slate-500 mt-1">${loc}</p>` : ''}
+            ${notes ? `<p class="text-xs text-slate-500 mt-1">${notes}</p>` : ''}
+          </div>
+          <label class="flex items-center gap-1.5 text-xs shrink-0 pt-0.5">
+            <input type="checkbox" ${p.done ? 'checked' : ''} onchange="toggleProjectDone('${p.id}')" class="w-4 h-4 rounded text-indigo-600" />
+            ${archived ? 'Restore' : 'Done'}
+          </label>
+        </div>
+        ${archived ? '' : `<div class="mt-3"><div class="flex justify-between text-xs mb-1.5"><span>Progress</span><span id="pct-${p.id}">${p.pct}%</span></div><input type="range" min="0" max="100" value="${p.pct}" oninput="updateProjectPct('${p.id}', this.value)" /></div>`}
+      </div>`;
     }
     function renderProjects() {
       const el = document.getElementById('projects-list');
