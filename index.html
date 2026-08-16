@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + focus-protocol
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + focus-protocol + full-backup-v2
   Base: user-provided polish-c (features + smart import)
-  Change: Focus phrase billboard (center + flex wrap fill); news L/R indent bumped to match Entertainment
+  Change: Full backup v2 includes jp_content_update_v1 (News/Entertainment/Finance) for Safari↔PWA sync
   Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3
 -->
 <html class="h-full" lang="en">
@@ -115,10 +115,10 @@
 <button aria-expanded="false" aria-haspopup="true" aria-label="More" class="p-2.5 rounded-xl active:bg-slate-100 dark:active:bg-slate-800 transition" id="more-menu-btn" type="button">
 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
 </button>
-<div class="hidden absolute right-0 mt-1 w-52 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg py-1 z-50" id="more-menu">
-<button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-export-data" type="button">Export backup</button>
+<div class="hidden absolute right-0 mt-1 w-64 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg py-1 z-50" id="more-menu">
+<button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-export-data" type="button">Export full backup</button>
 <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-import-smart" type="button">Import file</button>
-<p class="px-4 pt-1 pb-0.5 text-[10px] text-slate-400 leading-snug">Auto-detects weekly content or full backup</p>
+<p class="px-4 pt-1 pb-1 text-[10px] text-slate-400 leading-snug">Full backup = personal data + News / Entertainment / Finance content. Weekly content-only JSON also works.</p>
 <p class="px-4 py-1.5 text-[11px] text-slate-500 border-t border-slate-100 dark:border-slate-800 min-h-[1.25rem]" id="backup-status"></p>
 </div>
 <input accept="application/json,.json" class="hidden" id="content-import-file" type="file"/>
@@ -1472,14 +1472,17 @@
       menu.addEventListener('click', (e) => e.stopPropagation());
     })();
 
-    // --- Personal data backup (export / import) ---
+    // --- Full backup (personal data + News/Entertainment/Finance content) ---
+    // CONTENT_KEY included so Safari ↔ home-screen PWA can sync tab bodies
+    const CONTENT_KEY = 'jp_content_update_v1';
     const BACKUP_KEYS = [
       'theme',
       'jp_command_todos',
       'jp_goal_bullets_v1',
       'jp_health_bullets_v1',
       'jp_command_projects_v3',
-      'jp_lab_ideas_v3'
+      'jp_lab_ideas_v3',
+      CONTENT_KEY
     ];
     function setBackupStatus(msg) {
       const el = document.getElementById('backup-status');
@@ -1488,7 +1491,7 @@
     function exportPersonalData() {
       const payload = {
         app: 'command-center',
-        version: 1,
+        version: 2,
         exportedAt: new Date().toISOString(),
         data: {}
       };
@@ -1496,6 +1499,7 @@
         const v = localStorage.getItem(k);
         if (v !== null) payload.data[k] = v;
       });
+      const hasContent = !!payload.data[CONTENT_KEY];
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -1506,7 +1510,8 @@
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
-      setBackupStatus('Exported ' + Object.keys(payload.data).length + ' items · ' + day);
+      const n = Object.keys(payload.data).length;
+      setBackupStatus('Exported ' + n + ' items' + (hasContent ? ' (incl. content)' : '') + ' · ' + day);
     }
     function importPersonalData(file) {
       if (!file) return;
@@ -1516,13 +1521,15 @@
           const payload = JSON.parse(reader.result);
           const data = payload.data || payload;
           let n = 0;
+          let hadContent = false;
           BACKUP_KEYS.forEach(k => {
             if (data[k] !== undefined && data[k] !== null) {
               localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k]));
               n++;
+              if (k === CONTENT_KEY) hadContent = true;
             }
           });
-          setBackupStatus('Imported ' + n + ' items — reloading…');
+          setBackupStatus('Restored ' + n + ' items' + (hadContent ? ' + content' : '') + ' — reloading…');
           setTimeout(() => location.reload(), 600);
         } catch (e) {
           setBackupStatus('Import failed — use a Command Center backup JSON');
@@ -1550,7 +1557,7 @@
 
     
     // --- Content updates (news / finance / entertainment) via JSON — not full HTML ---
-    const CONTENT_KEY = 'jp_content_update_v1';
+    // CONTENT_KEY defined above with BACKUP_KEYS
     function applyContentUpdate(payload) {
       if (!payload || !payload.sections) return 0;
       let n = 0;
@@ -1616,22 +1623,24 @@
             if (menu) menu.classList.add('hidden');
             return;
           }
-          // Personal backup: has protected keys
+          // Full backup: personal keys and/or content body
           const data = payload.data || payload;
           const looksBackup = BACKUP_KEYS.some(k => data[k] !== undefined && data[k] !== null);
-          if (looksBackup) {
+          if (looksBackup || payload.app === 'command-center') {
             let n = 0;
+            let hadContent = false;
             BACKUP_KEYS.forEach(k => {
               if (data[k] !== undefined && data[k] !== null) {
                 localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k]));
                 n++;
+                if (k === CONTENT_KEY) hadContent = true;
               }
             });
-            setBackupStatus('Backup restored · ' + n + ' items — reloading…');
+            setBackupStatus('Full backup restored · ' + n + ' items' + (hadContent ? ' + content' : '') + ' — reloading…');
             setTimeout(() => location.reload(), 600);
             return;
           }
-          setBackupStatus('Unrecognized JSON — use a content update or backup export');
+          setBackupStatus('Unrecognized JSON — use full backup export or weekly content JSON');
         } catch (e) {
           setBackupStatus('Import failed — invalid JSON');
           console.error(e);
