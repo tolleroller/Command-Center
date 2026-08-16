@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + projects-spacing + news-gap-css
+  Command Center CC v2026-08-15-polish-c + projects-spacing + news-gap-v2
   Base: user-provided polish-c (features + smart import)
   Change: Projects section vertical spacing only — not a global redesign
   Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3
@@ -69,10 +69,11 @@
     input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 9999px; background: #334155; outline: none; width: 100%; }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #6366f1; cursor: pointer; box-shadow: 0 0 0 4px rgba(99,102,241,0.25); }
     .news-card { @apply p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-700/40; }
-    /* Force inter-category gap in News — Tailwind CDN often skips utilities injected via content JSON */
+    /* Force inter-category gap in News (Safari + injected HTML safe) */
+    #news-body .news-categories > .news-cat + .news-cat,
     #news-body .news-categories > .space-y-3 + .space-y-3,
     #news-body > div > .space-y-3 + .space-y-3 {
-      margin-top: 2rem;
+      margin-top: 2.5rem !important;
     }
     .cat-pill { @apply text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full; }
     .img-cover { object-fit: cover; width: 100%; height: 100%; }
@@ -196,48 +197,58 @@
       </section>
 <!-- FINANCE -->
 <section class="section space-y-4" id="finance">
-<div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Finance</h2><span class="text-xs text-slate-500" id="finance-label">Aug 8 snapshot</span></div>
-<div id="finance-body">
-<div class="card p-4 space-y-4">
-<div><div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Immediate Cash Goal</span><span class="text-slate-500">~$2.3k / $10k</span></div><div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:23%"></div></div></div>
-<div><div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Emergency Savings → $60k</span><span class="text-slate-500">~$19.2k / $60k</span></div><div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:32%"></div></div></div>
+<div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Finance</h2><span class="text-xs text-slate-500" id="finance-label">Aug 15 snapshot</span></div>
+<div id="finance-body"><div class="card p-4 space-y-4">
+  <div>
+    <div class="flex justify-between text-sm mb-1.5">
+      <span class="font-medium">Immediate Cash Goal</span>
+      <span class="text-slate-500">~$2.3k / $10k</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:23%"></div></div>
+  </div>
+  <div>
+    <div class="flex justify-between text-sm mb-1.5">
+      <span class="font-medium">Emergency Savings → $60k</span>
+      <span class="text-slate-500">~$19.2k / $60k</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:32%"></div></div>
+  </div>
 </div>
 <div class="grid grid-cols-2 gap-3">
-<div class="kpi"><p class="text-[10px] text-slate-500 uppercase">Schwab</p><p class="text-lg font-bold">$12,864</p></div>
-<div class="kpi"><p class="text-[10px] text-slate-500 uppercase">E*TRADE</p><p class="text-lg font-bold">$1,835</p></div>
-<div class="kpi"><p class="text-[10px] text-slate-500 uppercase">Public</p><p class="text-lg font-bold">$1,773</p></div>
-<div class="kpi"><p class="text-[10px] text-slate-500 uppercase">Cash</p><p class="text-lg font-bold text-emerald-500">~$1,870</p></div>
+  <div class="kpi"><p class="text-[10px] text-slate-500 uppercase">Schwab</p><p class="text-lg font-bold">$13,086</p></div>
+  <div class="kpi"><p class="text-[10px] text-slate-500 uppercase">E*TRADE</p><p class="text-lg font-bold">$1,918</p></div>
+  <div class="kpi"><p class="text-[10px] text-slate-500 uppercase">Public</p><p class="text-lg font-bold">$1,857</p></div>
+  <div class="kpi"><p class="text-[10px] text-slate-500 uppercase">Cash</p><p class="text-lg font-bold text-emerald-500">~$2,312</p></div>
 </div>
 <div class="card p-4">
-<h3 class="font-semibold mb-1">Main Positions <span class="text-xs font-normal text-slate-500">(~$12.9k Net Liq)</span></h3>
-<p class="text-[11px] text-slate-500 mb-3">Open P/L ≈ –$1,970</p>
-<div class="space-y-2 text-sm">
-<div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>TSLA</b> 17</span><span class="font-mono">$5,593 <span class="text-red-500 text-xs">–18%</span></span></div>
-<div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>MSTR</b> 17</span><span class="font-mono">$1,703 <span class="text-red-500 text-xs">–19%</span></span></div>
-<div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>STRC</b> 15</span><span class="font-mono">$1,425</span></div>
-<div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>PLTR</b> 8</span><span class="font-mono">$1,374 <span class="text-emerald-500 text-xs">+37%</span></span></div>
-<div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>CBRS</b> 6</span><span class="font-mono">$1,370</span></div>
-<div class="flex justify-between py-1.5"><span class="text-slate-500">Others</span><span class="text-xs text-slate-500">~$2.1k</span></div>
-</div>
+  <h3 class="font-semibold mb-1">Main Positions <span class="text-xs font-normal text-slate-500">(~$16.9k investments)</span></h3>
+  <p class="text-[11px] text-slate-500 mb-3">Schwab open P/L ≈ –$1,789 · Net liq ~$13.1k</p>
+  <div class="space-y-2 text-sm">
+    <div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>TSLA</b> 17</span><span class="font-mono">$5,809 <span class="text-red-500 text-xs">–15%</span></span></div>
+    <div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>MSTR</b> 17</span><span class="font-mono">$1,582 <span class="text-red-500 text-xs">–25%</span></span></div>
+    <div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>STRC</b> 15</span><span class="font-mono">$1,422</span></div>
+    <div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>PLTR</b> 8</span><span class="font-mono">$1,392 <span class="text-emerald-500 text-xs">+39%</span></span></div>
+    <div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>CBRS</b> 6</span><span class="font-mono">$1,315</span></div>
+    <div class="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-700/40"><span><b>SPCX</b> Public 13</span><span class="font-mono">$1,827 <span class="text-emerald-500 text-xs">+4%</span></span></div>
+    <div class="flex justify-between py-1.5"><span class="text-slate-500">Others (E*TRADE + small)</span><span class="text-xs text-slate-500">~$3.0k</span></div>
+  </div>
 </div>
 <div class="card p-4 border-l-4 border-l-emerald-500">
-<h3 class="font-semibold mb-2">Insights &amp; Next Steps</h3>
-<ul class="text-sm space-y-2 text-slate-600 dark:text-slate-300">
-<li>• <b>Cash buffer is the priority.</b> ~$1.5k liquid vs $10k target. Keep the ~$4k/mo savings rate focused here first.</li>
-<li>• <b>Portfolio is concentrated &amp; underwater.</b> TSLA + MSTR dominate with large open losses. Avoid adding risk until the $10k cash goal is hit.</li>
-<li>• <b>PLTR is the bright spot</b> (+37%). Let winners run; don’t average down on the big losers right now.</li>
-<li>• <b>Path:</b> Hit $10k cash → then build toward $60k emergency savings.</li>
-<li>• <b>X Money:</b> When available more broadly, evaluate moving Discover cash there.</li>
-<li>• <b>Simple rule:</b> Protect the downside, keep saving hard, update from screenshots every couple of weeks.</li>
-</ul>
-</div>
-</div>
+  <h3 class="font-semibold mb-2">Insights &amp; Next Steps</h3>
+  <ul class="text-sm space-y-2 text-slate-600 dark:text-slate-300">
+    <li>• <b>Cash is the priority.</b> ~$2.3k liquid vs $10k target. Keep the savings rate focused here first.</li>
+    <li>• <b>Portfolio still concentrated &amp; underwater on Schwab.</b> TSLA + MSTR dominate open losses (~–$1.8k). Avoid adding risk until the cash buffer is solid.</li>
+    <li>• <b>PLTR remains the bright spot</b> (+39%). Public SPCX also green (+4%). Let winners run; don’t average down on the big losers.</li>
+    <li>• <b>Path:</b> Hit $10k cash → then build toward $60k emergency savings (~$19.2k combined now).</li>
+    <li>• <b>Simple rule:</b> Protect the downside, keep saving hard, update from screenshots every couple of weeks.</li>
+  </ul>
+</div></div>
 </section>
 <!-- NEWS -->
 <section class="section space-y-5" id="news">
 <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">News Pulse</h2><span class="text-xs text-slate-500" id="news-label">Aug 15 · curated</span></div>
 <div id="news-body"><div class="news-categories">
-  <div class="space-y-3">
+  <div class="space-y-3 news-cat">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Markets</span>
     </div>
@@ -261,7 +272,7 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3" style="margin-top:2rem">
+  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Elon · SpaceX · Tesla</span>
     </div>
@@ -285,7 +296,7 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3" style="margin-top:2rem">
+  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300">Tech &amp; AI</span>
     </div>
@@ -309,7 +320,7 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3" style="margin-top:2rem">
+  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300">Science</span>
     </div>
@@ -333,7 +344,7 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3" style="margin-top:2rem">
+  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300">Trump Admin</span>
     </div>
@@ -357,7 +368,7 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3" style="margin-top:2rem">
+  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">UAP / UFOs</span>
     </div>
@@ -381,7 +392,7 @@
       </div>
     </div>
   </div>
-  <div class="space-y-3" style="margin-top:2rem">
+  <div class="space-y-3 news-cat" style="margin-top:2.5rem">
     <div class="flex items-center gap-2">
       <span class="cat-pill bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300">Trending</span>
     </div>
@@ -414,176 +425,72 @@
 <span class="text-xs text-slate-500" id="entertainment-label">Matched to your taste</span>
 </div>
 <div id="entertainment-body"><div class="space-y-5">
-<div>
-<div class="flex items-center gap-2 mb-2">
-<span class="cat-pill bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300">Coming Soon</span>
-</div>
-<div class="space-y-1">
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3">
-<img alt="Lanterns" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=300&amp;q=80"/>
-<div class="min-w-0 flex-1">
-<div class="flex justify-between items-start gap-2">
-<p class="font-semibold text-sm">Lanterns</p>
-<span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 shrink-0">HBO</span>
-</div>
-<p class="text-xs text-slate-500 mt-0.5">HBO / Max · Aug 16 premiere</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Green Lantern as True Detective–style mystery. Kyle Chandler + Aaron Pierre. High-signal prestige sci-fi / DC lane.</p>
-</div>
-</div>
-</div>
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3">
-<img alt="Reacher" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&amp;q=80"/>
-<div class="min-w-0 flex-1">
-<div class="flex justify-between items-start gap-2">
-<p class="font-semibold text-sm">Reacher S4</p>
-<span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 shrink-0">Prime</span>
-</div>
-<p class="text-xs text-slate-500 mt-0.5">Prime Video · Available now</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Pentagon / terror-cell conspiracy. Pure smart-thriller muscle that matches your prestige-thriller taste.</p>
-</div>
-</div>
-</div>
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3">
-<img alt="Normal" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=300&amp;q=80"/>
-<div class="min-w-0 flex-1">
-<div class="flex justify-between items-start gap-2">
-<p class="font-semibold text-sm">Normal</p>
-<span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 shrink-0">HBO</span>
-</div>
-<p class="text-xs text-slate-500 mt-0.5">HBO · New</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Bob Odenkirk small-town crime conspiracy. Prestige character drama with a thriller spine.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div>
-<div class="flex items-center gap-2 mb-2">
-<span class="cat-pill bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300">Streaming now</span>
-</div>
-<div class="space-y-1">
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3">
-<img alt="Ted Lasso" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://image.tmdb.org/t/p/w185/lz8vNyXeidqqOdJW9ZjnDAMb5Vr.jpg"/>
-<div class="min-w-0 flex-1">
-<div class="flex justify-between items-start gap-2">
-<p class="font-semibold text-sm">Ted Lasso S4</p>
-<span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 shrink-0">Apple</span>
-</div>
-<p class="text-xs text-slate-500 mt-0.5">Apple TV · Rolling</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Comfort prestige if you want a lighter tone between heavier shows.</p>
-</div>
-</div>
-</div>
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3">
-<img alt="Yellowstone" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://image.tmdb.org/t/p/w185/vOYfRZ0NpUK5hG2CB2dJFnYJlGe.jpg"/>
-<div class="min-w-0 flex-1">
-<div class="flex justify-between items-start gap-2">
-<p class="font-semibold text-sm">Yellowstone universe</p>
-<span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 shrink-0">Paramount+</span>
-</div>
-<p class="text-xs text-slate-500 mt-0.5">Paramount+ · Multiple spin-offs</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Frontier / power / land. Core lane for you — 1883 and the main series still hold.</p>
-</div>
-</div>
-</div>
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3">
-<img alt="The Bear" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://image.tmdb.org/t/p/w185/eKfVzzEazSIjJMrw9ADa2x8ksLz.jpg"/>
-<div class="min-w-0 flex-1">
-<div class="flex justify-between items-start gap-2">
-<p class="font-semibold text-sm">The Bear</p>
-<span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 shrink-0">Hulu</span>
-</div>
-<p class="text-xs text-slate-500 mt-0.5">Hulu / Disney+</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Character intensity + found-family pressure. Matches the prestige drama side of your list.</p>
-</div>
-</div>
-</div>
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3">
-<img alt="True Detective" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://image.tmdb.org/t/p/w185/dC7jkj2g1aU8sxKqM6D4g44xA6w.jpg"/>
-<div class="min-w-0 flex-1">
-<div class="flex justify-between items-start gap-2">
-<p class="font-semibold text-sm">True Detective (S1)</p>
-<span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 shrink-0">HBO</span>
-</div>
-<p class="text-xs text-slate-500 mt-0.5">Max / HBO</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">You rated it 9. Philosophical + procedural blend — strong atmosphere when you want it.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="card p-4 border-l-4 border-l-indigo-500">
-<p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium mb-1">Streaming Synergy</p>
-<p class="text-sm font-medium">Services that already carry a lot of your 10s / 9s</p>
-<ul class="mt-2 space-y-1 text-xs text-slate-600 dark:text-slate-400">
-<li>• <span class="font-medium text-slate-800 dark:text-slate-200">Max / HBO</span> — Chernobyl, True Detective, Band of Brothers adjacent, high-end drama</li>
-<li>• <span class="font-medium text-slate-800 dark:text-slate-200">Paramount+</span> — Yellowstone universe, 1883, strong western / frontier catalog</li>
-<li>• <span class="font-medium text-slate-800 dark:text-slate-200">Netflix</span> — Night Agent, several of your thriller and limited-series 10s</li>
-<li>• <span class="font-medium text-slate-800 dark:text-slate-200">Disney+</span> — Andor-level prestige + selective classics</li>
-</ul>
-</div>
-<div>
-<div class="flex items-center gap-2 mb-2">
-<span class="cat-pill bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Music · Your Lane</span>
-</div>
-<div class="space-y-1">
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3 items-start">
-<img alt="Indie folk" class="w-14 h-14 rounded-lg object-cover shrink-0" loading="lazy" src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=200&amp;q=80"/>
-<div class="min-w-0">
-<p class="font-semibold text-sm">2026 favorites core</p>
-<p class="text-xs text-slate-500 mt-0.5">Stay here</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Bon Iver, Chris Staples, Gregory Alan Isakov, Anna Graves, Sylvan Esso, Caiola, Mazzy Star. Indie Folk / Folk / Chill mixes are correctly tuned.</p>
-</div>
-</div>
-</div>
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3 items-start">
-<img alt="Explore" class="w-14 h-14 rounded-lg object-cover shrink-0" loading="lazy" src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&amp;q=80"/>
-<div class="min-w-0">
-<p class="font-semibold text-sm">Same pocket — explore next</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Iron &amp; Wine, The Paper Kites, Lord Huron, Noah Kahan (selective), The Tallest Man on Earth, José González, Fleet Foxes deep cuts.</p>
-</div>
-</div>
-</div>
-<div class="card p-3.5 overflow-hidden">
-<div class="flex gap-3 items-start">
-<img alt="Left turn" class="w-14 h-14 rounded-lg object-cover shrink-0" loading="lazy" src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&amp;q=80"/>
-<div class="min-w-0">
-<p class="font-semibold text-sm">Slight left turn</p>
-<p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Atmospheric electronic with heart (Tycho, select Bonobo) or classic singer-songwriter (deeper Dylan, early Springsteen, Gillian Welch).</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div>
-<p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">Mood</p>
-<div class="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
-<div class="flex-none w-36 h-24 rounded-xl overflow-hidden relative">
-<img alt="Live" class="img-cover" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-1.5 left-2 text-white text-[11px] font-medium">Live</p>
-</div>
-<div class="flex-none w-36 h-24 rounded-xl overflow-hidden relative">
-<img alt="Cinema" class="img-cover" src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-1.5 left-2 text-white text-[11px] font-medium">Cinema</p>
-</div>
-<div class="flex-none w-36 h-24 rounded-xl overflow-hidden relative">
-<img alt="Alone" class="img-cover" src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&amp;q=80"/>
-<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-<p class="absolute bottom-1.5 left-2 text-white text-[11px] font-medium">Alone</p>
-</div>
-</div>
-</div>
+  <div>
+    <div class="flex items-center gap-2 mb-2">
+      <span class="cat-pill bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300">Coming Soon</span>
+    </div>
+    <div class="space-y-3">
+      <div class="card p-3.5 overflow-hidden">
+        <div class="flex gap-3">
+          <img alt="Lanterns" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=300&amp;q=80"/>
+          <div class="min-w-0 flex-1">
+            <div class="flex justify-between items-start gap-2">
+              <p class="font-semibold text-sm">Lanterns</p>
+              <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 shrink-0">HBO</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">HBO / Max · Aug 16 premiere</p>
+            <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Green Lantern as True Detective–style mystery. Kyle Chandler + Aaron Pierre. High-signal prestige sci-fi / DC lane.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card p-3.5 overflow-hidden">
+        <div class="flex gap-3">
+          <img alt="Lioness" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=300&amp;q=80"/>
+          <div class="min-w-0 flex-1">
+            <div class="flex justify-between items-start gap-2">
+              <p class="font-semibold text-sm">Lioness S3</p>
+              <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 shrink-0">Paramount+</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">Paramount+ · streaming now</p>
+            <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Taylor Sheridan spy drama. Zoe Saldaña returns — smart-thriller muscle that fits the prestige lane.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="flex items-center gap-2 mb-2">
+      <span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Worth a look</span>
+    </div>
+    <div class="space-y-3">
+      <div class="card p-3.5 overflow-hidden">
+        <div class="flex gap-3">
+          <img alt="Silo" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=300&amp;q=80"/>
+          <div class="min-w-0 flex-1">
+            <div class="flex justify-between items-start gap-2">
+              <p class="font-semibold text-sm">Silo</p>
+              <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 shrink-0">Apple TV</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">Apple TV+ · episodes ongoing</p>
+            <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Contained dystopia, strong craft. Selective sci-fi that rewards attention without pure spectacle.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card p-3.5 overflow-hidden">
+        <div class="flex gap-3">
+          <img alt="Music" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&amp;q=80"/>
+          <div class="min-w-0 flex-1">
+            <div class="flex justify-between items-start gap-2">
+              <p class="font-semibold text-sm">Indie folk / Americana</p>
+              <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 shrink-0">Music</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">Playlist lane</p>
+            <p class="text-xs mt-1.5 text-slate-600 dark:text-slate-400 leading-snug">Bon Iver, Gregory Alan Isakov, Staples — keep the quiet production soundtrack on rotation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div></div>
 </section>
 <!-- GOALS -->
