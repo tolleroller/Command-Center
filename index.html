@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + aligned-margins + focus-protocol + full-backup-v2 + robust-backup
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + aligned-margins + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup
   Base: user-provided polish-c (features + smart import)
   Change: Full backup exports ALL theme + jp_* localStorage keys (Today's Focus, Projects+notes, Goals notes, Health notes, Lab ideas+next steps, content bodies, theme). Future-proof for any new editable keys. Safari↔PWA + version upgrades.
   Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3, jp_content_update_v1
@@ -44,7 +44,8 @@
     .progress-bar { height: 8px; background: rgba(148,163,184,0.25); border-radius: 999px; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 999px; transition: width 0.3s ease; }
     .progress-fill { @apply h-full rounded-full transition-all duration-500; }
-    .section { display: none; padding-bottom: 6.5rem; }
+    .section { display: none; padding-bottom: 6.5rem; min-height: calc(100dvh - 8rem); }
+    main.flex-1 { min-height: calc(100dvh - 8rem); }
     .section.active { display: block; }
     .todo-item.completed { @apply opacity-50 line-through; }
     .tab-bar { padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
@@ -1056,11 +1057,13 @@
 
     // Todos
     const TODO_KEY = 'jp_command_todos';
-    // Only seed defaults the first time — empty list after deletes must persist
+    const SEED_FLAG = 'jp_cc_seeded_v1';
+    // Seed defaults only on first-ever visit. Empty [] after deletes/import must persist.
     let todos;
     {
       const rawTodos = localStorage.getItem(TODO_KEY);
-      if (rawTodos === null) {
+      const seeded = localStorage.getItem(SEED_FLAG);
+      if (rawTodos === null && !seeded) {
         todos = [
           { id: 1, text: 'Advance Cherry Ridge letter package', done: false },
           { id: 2, text: 'Civil 3D production block (2–3 hrs)', done: false },
@@ -1068,6 +1071,10 @@
           { id: 4, text: '10–15 min evening review', done: false }
         ];
         localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+        localStorage.setItem(SEED_FLAG, '1');
+      } else if (rawTodos === null) {
+        todos = [];
+        localStorage.setItem(TODO_KEY, '[]');
       } else {
         try { todos = JSON.parse(rawTodos) || []; } catch { todos = []; }
       }
@@ -1166,7 +1173,8 @@
     let projects;
     {
       const rawP = localStorage.getItem(PROJECT_KEY);
-      if (rawP === null) {
+      const seeded = localStorage.getItem(SEED_FLAG);
+      if (rawP === null && !seeded) {
         projects = [
           { id: 'cherry', name: 'Cherry Ridge Septic', location: 'Emmett, ID', pct: 100, done: true, notes: 'Drainfield + engineering letter · near complete' },
           { id: 'faith', name: 'Faith Landing Pump Station', location: 'Canyon Village', pct: 82, done: false, notes: 'Design + ISPWC/ACHD coordination' },
@@ -1174,6 +1182,10 @@
           { id: 'turquoise', name: 'Turquoise Ridge (TX)', location: 'Wise County', pct: 69, done: false, notes: 'Plats / drainage wrap-up' }
         ];
         localStorage.setItem(PROJECT_KEY, JSON.stringify(projects));
+        localStorage.setItem(SEED_FLAG, '1');
+      } else if (rawP === null) {
+        projects = [];
+        localStorage.setItem(PROJECT_KEY, '[]');
       } else {
         try { projects = JSON.parse(rawP) || []; } catch { projects = []; }
       }
@@ -1527,11 +1539,16 @@
       Object.keys(data || {}).forEach(k => {
         if (!isBackupKey(k)) return;
         if (data[k] !== undefined && data[k] !== null) {
-          localStorage.setItem(k, typeof data[k] === 'string' ? data[k] : JSON.stringify(data[k]));
+          // Values may already be JSON strings (export) or raw objects
+          let val = data[k];
+          if (typeof val !== 'string') val = JSON.stringify(val);
+          localStorage.setItem(k, val);
           n++;
           if (k === CONTENT_KEY) hadContent = true;
         }
       });
+      // Mark seeded so empty todos/projects in this backup never get defaults re-injected
+      localStorage.setItem('jp_cc_seeded_v1', '1');
       return { n, hadContent };
     }
     function importPersonalData(file) {
