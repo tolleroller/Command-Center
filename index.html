@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + aligned-margins + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + comfortable-gutter + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup
   Base: user-provided polish-c (features + smart import)
-  Change: Full backup exports ALL theme + jp_* localStorage keys (Today's Focus, Projects+notes, Goals notes, Health notes, Lab ideas+next steps, content bodies, theme). Future-proof for any new editable keys. Safari↔PWA + version upgrades.
+  Change: Uniform section gutter px-3 on every tab. Main px-0. News extra L/R indent gone. Finance progress bars un-carded so labels align under section title. Home snapshot cards use px-3 horizontal. Entertainment/News category rows share title edge.
   Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3, jp_content_update_v1
 -->
 <html class="h-full" lang="en">
@@ -49,7 +49,7 @@
     .section.active { display: block; }
     .todo-item.completed { @apply opacity-50 line-through; }
     .tab-bar { padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
-    .tab-scroll { display: flex; overflow-x: auto; gap: 4px; padding: 6px 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .tab-scroll { display: flex; overflow-x: auto; gap: 4px; padding: 6px 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
     .tab-scroll::-webkit-scrollbar { display: none; }
     .tab-btn { @apply flex flex-col items-center justify-center gap-0.5 rounded-2xl transition-all duration-150 shrink-0; min-height: 56px; min-width: 64px; padding: 6px 10px; -webkit-user-select: none; user-select: none; }
     .tab-btn:active { transform: scale(0.92); }
@@ -70,12 +70,6 @@
     input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 9999px; background: #334155; outline: none; width: 100%; }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #6366f1; cursor: pointer; box-shadow: 0 0 0 4px rgba(99,102,241,0.25); }
     .news-card { @apply p-3.5 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/50 shadow-sm; }
-    /* Indent news category image + headlines L/R to match Entertainment cards */
-    #news-body .news-cat > .relative,
-    #news-body .news-cat > .space-y-3 {
-      margin-left: 0.65rem;
-      margin-right: 0.65rem;
-    }
     /* Force inter-category gap in News (Safari-safe spacer + margin fallback) */
     #news-body .news-cat-spacer {
       height: 2.5rem !important;
@@ -98,7 +92,7 @@
 <body class="h-full bg-slate-50 dark:bg-slate-925 text-slate-900 dark:text-slate-100">
 <div class="min-h-full flex flex-col">
 <header class="app-header sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
-<div class="max-w-3xl mx-auto px-2">
+<div class="max-w-3xl mx-auto px-4">
 <div class="flex items-center justify-between h-12">
 <div class="flex items-center gap-3">
 <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md">JP</div>
@@ -131,7 +125,7 @@
 </header>
 <main class="flex-1 max-w-3xl mx-auto w-full px-0 py-4">
 <!-- HOME -->
-<section class="section active space-y-5 px-3" id="overview">
+<section class="section active space-y-5 px-4" id="overview">
 <div class="relative h-36 rounded-2xl overflow-hidden">
 <img alt="Mountains" class="img-cover" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&amp;q=80"/>
 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
@@ -149,7 +143,7 @@
 <div class="kpi"><p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Monthly Savings</p><p class="mt-1 text-xl font-bold text-emerald-600 dark:text-emerald-400">~$4,000</p><p class="text-[11px] text-slate-500">~50% take-home</p></div>
 <div class="kpi"><p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Net Worth</p><p class="mt-1 text-xl font-bold">~$20,000</p><p class="text-[11px] text-slate-500">Brokerages + cash</p></div>
 </div>
-<div class="card p-4">
+<div class="card px-3 py-4">
 <div class="flex items-center justify-between mb-3"><h2 class="font-semibold">Goals Snapshot</h2><span class="text-xs text-indigo-500">Goals tab →</span></div>
 <div class="space-y-3">
 <div><div class="flex justify-between text-sm mb-1"><span class="font-medium">$10k Cash Buffer</span><span class="text-slate-500">~$2.3k · 23%</span></div><div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:23%"></div></div></div>
@@ -157,7 +151,7 @@
 <div><div class="flex justify-between text-sm mb-1"><span class="font-medium">Homestead / Cabin</span><span class="text-slate-500">Early</span></div><div class="progress-bar"><div class="progress-fill bg-amber-500" style="width:5%"></div></div></div>
 </div>
 </div>
-<div class="card p-4">
+<div class="card px-3 py-4">
 <div class="flex items-center justify-between mb-3"><h2 class="font-semibold">Today's Focus</h2><span class="text-xs text-slate-500" id="today-date"></span></div>
 <ul class="space-y-2" id="todo-list"></ul>
 <div class="mt-3 flex gap-2">
@@ -165,7 +159,7 @@
 <button class="px-4 py-2.5 bg-indigo-600 active:bg-indigo-700 text-white rounded-xl text-sm font-medium" id="add-todo">Add</button>
 </div>
 </div>
-<div class="card p-4"><h2 class="font-semibold mb-3">Project Pulse</h2><div class="space-y-3" id="project-pulse"></div></div>
+<div class="card px-3 py-4"><h2 class="font-semibold mb-3">Project Pulse</h2><div class="space-y-3" id="project-pulse"></div></div>
 <!-- Vision board — ending statement, full-screen height -->
 <div>
 <p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium mb-2">Vision Board</p>
@@ -175,7 +169,7 @@
 </div>
 </section>
 <!-- PROJECTS -->
-<section class="section space-y-5 px-3" id="projects">
+<section class="section space-y-5 px-4" id="projects">
         <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-lg font-semibold">Projects</h2>
@@ -208,9 +202,9 @@
         </div>
       </section>
 <!-- FINANCE -->
-<section class="section space-y-4 px-3" id="finance">
+<section class="section space-y-4 px-4" id="finance">
 <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Finance</h2><span class="text-xs text-slate-500" id="finance-label">Aug 15 snapshot</span></div>
-<div id="finance-body"><div class="card p-4 space-y-4">
+<div id="finance-body" class="space-y-4"><div class="space-y-4">
   <div>
     <div class="flex justify-between text-sm mb-1.5">
       <span class="font-medium">Immediate Cash Goal</span>
@@ -257,7 +251,7 @@
 </div></div>
 </section>
 <!-- NEWS -->
-<section class="section space-y-5 px-3" id="news">
+<section class="section space-y-5 px-4" id="news">
 <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">News Pulse</h2><span class="text-xs text-slate-500" id="news-label">Aug 15 · curated</span></div>
 <div id="news-body"><div class="news-categories">
   <div class="space-y-3 news-cat">
@@ -437,7 +431,7 @@
 </div></div>
 </section>
 <!-- ENTERTAINMENT -->
-<section class="section space-y-5 px-3" id="entertainment">
+<section class="section space-y-5 px-4" id="entertainment">
 <div class="flex items-center justify-between">
 <h2 class="text-lg font-semibold">Entertainment</h2>
 <span class="text-xs text-slate-500" id="entertainment-label">Matched to your taste</span>
@@ -449,7 +443,7 @@
             <span class="cat-pill bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300">Coming Soon</span>
           </div>
           <div class="space-y-3">
-            <div class="card p-3.5 overflow-hidden">
+            <div class="card px-3 py-3 overflow-hidden">
               <div class="flex gap-3">
                 <img alt="Lanterns" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=300&q=80"/>
                 <div class="min-w-0 flex-1">
@@ -462,7 +456,7 @@
                 </div>
               </div>
             </div>
-            <div class="card p-3.5">
+            <div class="card px-3 py-3">
               <div class="flex justify-between items-start gap-3">
                 <div>
                   <p class="font-semibold text-sm">Dune: Part Three</p>
@@ -472,7 +466,7 @@
                 <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 shrink-0">Theater</span>
               </div>
             </div>
-            <div class="card p-3.5">
+            <div class="card px-3 py-3">
               <div class="flex justify-between items-start gap-3">
                 <div>
                   <p class="font-semibold text-sm">Andor Season 2 follow-ups / Star Wars prestige</p>
@@ -482,7 +476,7 @@
                 <span class="text-[10px] font-semibold px-2 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 shrink-0">Disney+</span>
               </div>
             </div>
-            <div class="card p-3 overflow-hidden">
+            <div class="card px-3 py-3 overflow-hidden">
               <div class="flex gap-3">
                 <img src="https://image.tmdb.org/t/p/w185/vOYfRZ0NpUK5hG2CB2dJFnYJlGe.jpg" alt="Yellowstone" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
                 <div class="min-w-0 flex-1">
@@ -504,7 +498,7 @@
             <span class="cat-pill bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300">Movies & TV · For You</span>
           </div>
           <div class="space-y-3">
-            <div class="card p-3 overflow-hidden">
+            <div class="card px-3 py-3 overflow-hidden">
               <div class="flex gap-3">
                 <img src="https://image.tmdb.org/t/p/w185/lz8vNyXeidqqOdJW9ZjnDAMb5Vr.jpg" alt="Sicario" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
                 <div class="min-w-0">
@@ -514,7 +508,7 @@
                 </div>
               </div>
             </div>
-            <div class="card p-3 overflow-hidden">
+            <div class="card px-3 py-3 overflow-hidden">
               <div class="flex gap-3">
                 <img src="https://image.tmdb.org/t/p/w185/eKfVzzEazSIjJMrw9ADa2x8ksLz.jpg" alt="The Bear" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
                 <div class="min-w-0">
@@ -524,7 +518,7 @@
                 </div>
               </div>
             </div>
-            <div class="card p-3 overflow-hidden">
+            <div class="card px-3 py-3 overflow-hidden">
               <div class="flex gap-3">
                 <img src="https://image.tmdb.org/t/p/w185/dC7jkj2g1aU8sxKqM6D4g44xA6w.jpg" alt="True Detective" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
                 <div class="min-w-0">
@@ -534,7 +528,7 @@
                 </div>
               </div>
             </div>
-            <div class="card p-3 overflow-hidden">
+            <div class="card px-3 py-3 overflow-hidden">
               <div class="flex gap-3">
                 <img src="https://image.tmdb.org/t/p/w185/fa0RDkAlCec0STeMNAhPaF89q6U.jpg" alt="There Will Be Blood" class="w-16 h-24 rounded-lg object-cover shrink-0 bg-slate-200 dark:bg-slate-700" loading="lazy" />
                 <div class="min-w-0">
@@ -564,19 +558,19 @@
           <div class="flex items-center gap-2 mb-3">
             <span class="cat-pill bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">Music · Your Lane</span>
           </div>
-          <div class="space-y-3">
-            <div class="card p-3.5">
+          <div class="space-y-4">
+            <div>
               <p class="font-semibold text-sm">Keep feeding the 2026 favorites list</p>
               <p class="text-xs text-slate-500 mt-0.5">Your current core is strong</p>
-              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">Bon Iver, Chris Staples, Gregory Alan Isakov, Anna Graves, Sylvan Esso, Caiola, Mazzy Star territory. The Indie Folk / Folk mixes are correctly tuned.</p>
+              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400 leading-relaxed">Bon Iver, Chris Staples, Gregory Alan Isakov, Anna Graves, Sylvan Esso, Caiola, Mazzy Star territory. The Indie Folk / Folk mixes are correctly tuned.</p>
             </div>
-            <div class="card p-3.5">
+            <div>
               <p class="font-semibold text-sm">Artists to explore next in the same pocket</p>
-              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">Iron & Wine, The Paper Kites, Lord Huron, Noah Kahan (selective), The Tallest Man on Earth, José González, Fleet Foxes deep cuts. All sit adjacent to what you already play heavily.</p>
+              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400 leading-relaxed">Iron & Wine, The Paper Kites, Lord Huron, Noah Kahan (selective), The Tallest Man on Earth, José González, Fleet Foxes deep cuts. All sit adjacent to what you already play heavily.</p>
             </div>
-            <div class="card p-3.5">
+            <div>
               <p class="font-semibold text-sm">When you want a slight left turn</p>
-              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400">More atmospheric electronic that still has heart (select Tycho, some Bonobo, or the chill daylist energy you already use) or classic singer-songwriter (deeper Dylan, early Springsteen, Gillian Welch).</p>
+              <p class="text-xs mt-2 text-slate-600 dark:text-slate-400 leading-relaxed">More atmospheric electronic that still has heart (select Tycho, some Bonobo, or the chill daylist energy you already use) or classic singer-songwriter (deeper Dylan, early Springsteen, Gillian Welch).</p>
             </div>
           </div>
         </div>
@@ -605,7 +599,7 @@
 </div></div>
 </section>
 <!-- GOALS -->
-<section class="section space-y-4 px-3" id="goals">
+<section class="section space-y-4 px-4" id="goals">
 <div class="flex items-center justify-between"><h2 class="text-lg font-semibold">Goals</h2><span class="text-xs text-slate-500">Progress · bullets · next steps</span></div>
 <!-- Focus — full width (match Health / Lab top blocks) -->
 <div class="w-full">
@@ -758,7 +752,7 @@
 </div>
 </section>
 <!-- HEALTH -->
-<section class="section space-y-6 px-3" id="health">
+<section class="section space-y-6 px-4" id="health">
 <div>
 <h2 class="text-lg font-semibold">Health</h2>
 <p class="text-sm text-slate-500 mt-1">Body, mind, nature, and the habits that compound. Living repository — nothing has to die here.</p>
@@ -953,7 +947,7 @@
 </div>
 </section>
 <!-- LAB -->
-<section class="section space-y-6 px-3" id="lab">
+<section class="section space-y-6 px-4" id="lab">
 <div>
 <h2 class="text-lg font-semibold">Lab</h2>
 <p class="text-sm text-slate-500 mt-1">Living workshop for ideas. Dump the spark — get vision, synergies, and real paths back.</p>
