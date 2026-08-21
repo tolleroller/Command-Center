@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + comfortable-gutter + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + comfortable-gutter + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup + import-ios-fix
   Base: user-provided polish-c (features + smart import)
   Change: Uniform section gutter px-3 on every tab. Main px-0. News extra L/R indent gone. Finance progress bars un-carded so labels align under section title. Home snapshot cards use px-3 horizontal. Entertainment/News category rows share title edge.
+  2026-08-20: Import file — do not close more-menu on click (iOS file picker was cancelled); show status for ~2s after content import.
   Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3, jp_content_update_v1
 -->
 <html class="h-full" lang="en">
@@ -1571,12 +1572,17 @@
       if (menu) menu.classList.add('hidden');
     });
     if (btnImport && importFile) {
-      btnImport.addEventListener('click', () => importFile.click());
+      // Do NOT hide the menu here — closing the menu in the same click
+      // prevents the iOS file picker from opening.
+      btnImport.addEventListener('click', (e) => {
+        e.stopPropagation();
+        importFile.click();
+      });
       importFile.addEventListener('change', (e) => {
-      const f = e.target.files && e.target.files[0];
-      if (f) smartImportFile(f);
-      e.target.value = '';
-    });
+        const f = e.target.files && e.target.files[0];
+        if (f) smartImportFile(f);
+        e.target.value = '';
+      });
     }
 
     
@@ -1621,9 +1627,11 @@
           }
           const n = applyContentUpdate(payload);
           localStorage.setItem(CONTENT_KEY, JSON.stringify(payload));
-          setBackupStatus('Content updated · ' + n + ' section(s) · ' + (payload.updatedAt || '').slice(0, 10));
-          const menu = document.getElementById('more-menu');
-          if (menu) menu.classList.add('hidden');
+          setBackupStatus('✓ Content updated · ' + n + ' section(s) · ' + (payload.updatedAt || '').slice(0, 10));
+          setTimeout(() => {
+            const menu = document.getElementById('more-menu');
+            if (menu) menu.classList.add('hidden');
+          }, 2200);
         } catch (e) {
           setBackupStatus('Content import failed — invalid JSON');
           console.error(e);
@@ -1642,9 +1650,12 @@
           if (payload.app === 'command-center-content' || (payload.sections && (payload.sections.finance || payload.sections.news || payload.sections.entertainment))) {
             const n = applyContentUpdate(payload);
             localStorage.setItem(CONTENT_KEY, JSON.stringify(payload));
-            setBackupStatus('Content updated · ' + n + ' section(s)' + (payload.updatedAt ? ' · ' + String(payload.updatedAt).slice(0, 10) : ''));
-            const menu = document.getElementById('more-menu');
-            if (menu) menu.classList.add('hidden');
+            setBackupStatus('✓ Content updated · ' + n + ' section(s)' + (payload.updatedAt ? ' · ' + String(payload.updatedAt).slice(0, 10) : ''));
+            // Keep menu open so the status is visible; close after a short delay
+            setTimeout(() => {
+              const menu = document.getElementById('more-menu');
+              if (menu) menu.classList.add('hidden');
+            }, 2200);
             return;
           }
           // Full backup: any theme / jp_* personal keys and/or content body
@@ -1671,18 +1682,7 @@
 
     renderIdeas();
   
-    (function(){
-      const btn = document.getElementById('btn-import-smart');
-      const fileInput = document.getElementById('import-file');
-      if (btn && fileInput) {
-        btn.addEventListener('click', () => { fileInput.click(); const menu = document.getElementById('more-menu'); if (menu) menu.classList.add('hidden'); });
-        fileInput.addEventListener('change', (e) => {
-          const f = e.target.files && e.target.files[0];
-          if (f) smartImportFile(f);
-          e.target.value = '';
-        });
-      }
-    })();
+    // Import button wiring is above (single listener — keeps menu open so iOS file picker works and status is visible)
 
 </script>
 </body>
