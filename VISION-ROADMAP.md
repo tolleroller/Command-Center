@@ -22,6 +22,7 @@ Interact primarily through chat with Grok. The Command Center app acts as the pe
 - **Repo:** private `tolleroller/Command-Center` (this file lives here)  
 - **Stack:** Single `index.html` (HTML + Tailwind CDN + vanilla JS + Chart.js where used). Data in browser `localStorage`. No backend.  
 - **Content updates:** Manual skill-driven JSON import for News / Entertainment / Finance only (see `command-center-update` skill). User imports via ⋯ → Import file on phone.  
+- **Lab ideas merge (new 2026-08-22):** Dedicated `command-center-lab` JSON can add/merge ideas into `jp_lab_ideas_v3` without touching any other data. Example file in repo: `command-center-lab-pod-merch-2026-08-22.json`.
 - **Protected localStorage keys** (never wipe or rename):  
   `theme`, `jp_command_todos`, `jp_goal_bullets_v1`, `jp_health_bullets_v1`, `jp_command_projects_v3`, `jp_lab_ideas_v3`
 
@@ -39,15 +40,19 @@ Grok Projects (chat-side) are useful for conversation continuity but are **not**
 
 This keeps the user in the review loop and matches professional engineering habits. Do **not** write to the repo without clear go-ahead unless the user has already given standing permission for that type of update.
 
+**Safety:** Before any potentially risky `index.html` change, a backup branch is created (e.g. `backup-pre-lab-merge-2026-08-22`). Easy to revert by checking out that branch or resetting main to it.
+
 ---
 
 ## Near-term Capabilities to Build Toward
 
-### 1. Conversation → structured import
+### 1. Conversation → structured import  ✅ (Lab portion live)
 - When an adventure, entrepreneurial idea, Lab concept, next-step, or focus item comes up in chat, Grok should offer:  
   **“Want to put this into your Command Center?”**
-- On “yes” → generate a clean, ready-to-import JSON (or localStorage-compatible payload) for Lab (`jp_lab_ideas_v3`), Projects, Goals, Todos, etc.
-- User currently imports manually. Goal is frictionless payloads first; later more automated push once hosting/auth matures.
+- On “yes” → generate a clean, ready-to-import JSON for Lab (`jp_lab_ideas_v3`).  
+  Schema: `{ "app": "command-center-lab", "version": 1, "ideas": [ {title, vision, synergies, options[], bullets[]} ] }`
+- Merge mode: adds only new titles; never overwrites existing Lab ideas or any other key.
+- User currently imports manually via ⋯ → Import file. Goal remains frictionless payloads first.
 
 ### 2. Update cadences
 - **News** → daily headlines (Markets, Elon·SpaceX·Tesla, Tech & AI, Science, policy, UAP/UFOs, Trending).  
@@ -66,7 +71,8 @@ This keeps the user in the review loop and matches professional engineering habi
 **POD Merch / Statement Brand (“skizofrenick sage” or similar)**  
 Low-capital, high-automation exploration. Print-on-demand T-shirts, stickers, posters via Printify (preferred starting margins) or Printful → own Shopify store (or parallel Amazon Merch). Core asset is generating clever, slightly unhinged mantras/sayings. Goal: pure creative outlet that can run with near-zero ongoing labor after initial upload. Zero inventory.  
 Status: tools researched; first designs + sample order still pending.  
-Natural home: Lab tab.
+Natural home: Lab tab.  
+**Import file ready:** `command-center-lab-pod-merch-2026-08-22.json` (in repo root).
 
 Other venture themes from the original list (community events, Salient Advisory / AI consulting, app ideas, etc.) remain available for prioritization later.
 
@@ -74,8 +80,8 @@ Other venture themes from the original list (community events, Salient Advisory 
 
 ## Practical Next Steps (pick up here)
 
-1. Design a small, versioned import schema for Lab ideas (and optionally Projects / Goals) that the current app can consume or that we can add a thin handler for.  
-2. Practice the “Want to put this into your Command Center?” flow on a real idea (start with the POD merch one).  
+1. ~~Design a small, versioned import schema for Lab ideas~~ → Done (2026-08-22).  
+2. Practice the “Want to put this into your Command Center?” flow on a real idea (start with the POD merch one) → Import the JSON after the index.html update lands.  
 3. Keep the existing weekly content JSON path for News / Entertainment / Finance; layer conversation capture on top.  
 4. When making real code changes, follow the review → commit workflow above.  
 5. Explore secure finance data sources later (no direct bank login credentials).
@@ -89,5 +95,6 @@ Other venture themes from the original list (community events, Salient Advisory 
 - Visual, masculine / non-cute aesthetic preference for the app.  
 - Primary development happens on iPhone (Safari PWA) from the apartment; web Grok used at work.  
 - Goal is a dashboard that feels alive so life stays in flow rather than requiring separate “update the app” sessions.
+- **Large file note:** `index.html` is ~3 MB because of the embedded vision-board image. Direct content push via connector has practical size limits; backup branches are the primary safety net.
 
 This file should be kept current whenever major direction or next-step decisions are made.
