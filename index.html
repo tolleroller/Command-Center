@@ -7,7 +7,7 @@
   2026-08-20: Import file — do not close more-menu on click (iOS file picker was cancelled); show status for ~2s after content import.
   2026-08-22: Lab merge import — command-center-lab JSON appends/merges ideas into jp_lab_ideas_v3 without touching other keys.
   2026-08-22: Vision board extracted from base64 → external vision-board.jpg (makes future GitHub commits practical).
-  2026-08-22: Sync from repo button (⋯ menu) — pulls lab-latest.json + content-latest.json. Repo (or those files) needs to be public for fetch to succeed.
+  2026-08-22: Sync from repo = single full-state file (command-center-latest.json). One button restores everything.
   Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3, jp_content_update_v1
 -->
 <html class="h-full" lang="en">
@@ -118,7 +118,7 @@
 <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-export-data" type="button">Export full backup</button>
 <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-import-smart" type="button">Import file</button>
 <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-sync-repo" type="button">Sync from repo</button>
-<p class="px-4 pt-1 pb-1 text-[10px] text-slate-400 leading-snug">Full backup = all editable data. Import file works for content or Lab JSON. Sync from repo pulls the latest lab-latest.json + content-latest.json from GitHub (repo must be public or the files readable).</p>
+<p class="px-4 pt-1 pb-1 text-[10px] text-slate-400 leading-snug">Sync from repo = full state from GitHub (todos, Lab, Projects, Goals, Health, Finance, News, Entertainment). One file, one button. Export full backup if you want a local copy.</p>
 <p class="px-4 py-1.5 text-[11px] text-slate-500 border-t border-slate-100 dark:border-slate-800 min-h-[1.25rem]" id="backup-status"></p>
 </div>
 <input accept="application/json,.json" class="hidden" id="content-import-file" type="file"/>
@@ -1589,82 +1589,26 @@
       });
     }
 
-    // --- Sync from repo (lab-latest.json + content-latest.json) ---
-    // Requires the files (or the repo) to be publicly readable.
-    const REPO_LAB_URL = 'https://raw.githubusercontent.com/tolleroller/Command-Center/main/lab-latest.json';
-    const REPO_CONTENT_URL = 'https://raw.githubusercontent.com/tolleroller/Command-Center/main/content-latest.json';
+    // --- Sync from repo — single full-state file ---
+    // One file: command-center-latest.json (full backup of everything)
+    const REPO_LATEST_URL = 'https://raw.githubusercontent.com/tolleroller/Command-Center/main/command-center-latest.json';
 
     async function syncFromRepo() {
       setBackupStatus('Syncing…');
-      let messages = [];
       try {
-        // Lab
-        try {
-          const labRes = await fetch(REPO_LAB_URL + '?t=' + Date.now());
-          if (labRes.ok) {
-            const labPayload = await labRes.json();
-            if (labPayload.ideas && Array.isArray(labPayload.ideas)) {
-              // Re-use the same merge path as file import
-              const fakeFile = new Blob([JSON.stringify(labPayload)], { type: 'application/json' });
-              // Directly run the merge logic
-              const incoming = labPayload.ideas || [];
-              let current = [];
-              try {
-                current = JSON.parse(localStorage.getItem(IDEA_KEY) || '[]');
-                if (!Array.isArray(current)) current = [];
-              } catch (e) { current = []; }
-              let added = 0;
-              incoming.forEach(raw => {
-                if (!raw || !raw.title) return;
-                const title = String(raw.title).trim();
-                if (!title) return;
-                const exists = current.some(i => (i.title || '').toLowerCase() === title.toLowerCase());
-                if (exists) return;
-                current.unshift({
-                  id: raw.id || Date.now() + Math.floor(Math.random() * 1000),
-                  title: title,
-                  vision: raw.vision || '',
-                  synergies: raw.synergies || '',
-                  options: Array.isArray(raw.options) ? raw.options : [],
-                  bullets: Array.isArray(raw.bullets) ? raw.bullets : []
-                });
-                added++;
-              });
-              if (added > 0) {
-                localStorage.setItem(IDEA_KEY, JSON.stringify(current));
-                if (typeof ideas !== 'undefined') { ideas = current; if (typeof renderIdeas === 'function') renderIdeas(); }
-                messages.push(added + ' Lab idea' + (added === 1 ? '' : 's'));
-              } else {
-                messages.push('Lab up to date');
-              }
-            }
-          } else {
-            messages.push('Lab fetch ' + labRes.status);
-          }
-        } catch (e) {
-          messages.push('Lab network error');
+        const res = await fetch(REPO_LATEST_URL + '?t=' + Date.now());
+        if (!res.ok) {
+          setBackupStatus('Sync failed — ' + res.status);
+          return;
         }
-
-        // Content (News / Entertainment / Finance)
-        try {
-          const contentRes = await fetch(REPO_CONTENT_URL + '?t=' + Date.now());
-          if (contentRes.ok) {
-            const contentPayload = await contentRes.json();
-            if (contentPayload.sections) {
-              const n = applyContentUpdate(contentPayload);
-              localStorage.setItem(CONTENT_KEY, JSON.stringify(contentPayload));
-              messages.push(n + ' content section' + (n === 1 ? '' : 's'));
-            }
-          } else {
-            messages.push('Content fetch ' + contentRes.status);
-          }
-        } catch (e) {
-          messages.push('Content network error');
-        }
-
-        setBackupStatus('✓ Sync · ' + (messages.join(' · ') || 'done'));
+        const payload = await res.json();
+        // Treat it exactly like a full backup import
+        const data = payload.data || payload;
+        const { n, hadContent } = restoreBackupData(data);
+        setBackupStatus('✓ Synced · ' + n + ' items' + (hadContent ? ' + content' : '') + ' — reloading…');
+        setTimeout(() => location.reload(), 700);
       } catch (e) {
-        setBackupStatus('Sync failed — check network or repo visibility');
+        setBackupStatus('Sync failed — check network');
         console.error(e);
       }
       setTimeout(() => {
