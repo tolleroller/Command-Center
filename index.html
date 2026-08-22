@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + comfortable-gutter + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup + import-ios-fix + full-bleed-hero-vb + hero-flush + home-finance-sync + cash-def-v2 + goals-lab-sync
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + comfortable-gutter + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup + import-ios-fix + full-bleed-hero-vb + hero-flush + home-finance-sync + cash-def-v2 + goals-lab-sync + lab-merge-import
   Base: user-provided polish-c (features + smart import)
   Change: Uniform section gutter px-3 on every tab. Main px-0. News extra L/R indent gone. Finance progress bars un-carded so labels align under section title. Home snapshot cards use px-3 horizontal. Entertainment/News category rows share title edge.
   2026-08-20: Import file — do not close more-menu on click (iOS file picker was cancelled); show status for ~2s after content import.
+  2026-08-22: Lab merge import — command-center-lab JSON appends/merges ideas into jp_lab_ideas_v3 without touching other keys.
   Protected: theme, jp_command_todos, jp_goal_bullets_v1, jp_health_bullets_v1, jp_command_projects_v3, jp_lab_ideas_v3, jp_content_update_v1
 -->
 <html class="h-full" lang="en">
@@ -114,7 +115,7 @@
 <div class="hidden absolute right-0 mt-1 w-64 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg py-1 z-50" id="more-menu">
 <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-export-data" type="button">Export full backup</button>
 <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" id="btn-import-smart" type="button">Import file</button>
-<p class="px-4 pt-1 pb-1 text-[10px] text-slate-400 leading-snug">Full backup = all editable data (Today's Focus, Projects + notes, Goals notes, Health notes, Lab ideas + next steps, theme) + News/Entertainment/Finance. Use for Safari↔PWA or version upgrades. Weekly content-only JSON also works.</p>
+<p class="px-4 pt-1 pb-1 text-[10px] text-slate-400 leading-snug">Full backup = all editable data (Today's Focus, Projects + notes, Goals notes, Health notes, Lab ideas + next steps, theme) + News/Entertainment/Finance. Weekly content JSON or Lab-only merge JSON also work. Lab merge only adds ideas — never wipes existing ones.</p>
 <p class="px-4 py-1.5 text-[11px] text-slate-500 border-t border-slate-100 dark:border-slate-800 min-h-[1.25rem]" id="backup-status"></p>
 </div>
 <input accept="application/json,.json" class="hidden" id="content-import-file" type="file"/>
@@ -1646,19 +1647,67 @@
       reader.onload = () => {
         try {
           const payload = JSON.parse(reader.result);
-          // Content update: skill JSON with sections
+
+          // 1. Content update: skill JSON with sections (News / Entertainment / Finance)
           if (payload.app === 'command-center-content' || (payload.sections && (payload.sections.finance || payload.sections.news || payload.sections.entertainment))) {
             const n = applyContentUpdate(payload);
             localStorage.setItem(CONTENT_KEY, JSON.stringify(payload));
             setBackupStatus('✓ Content updated · ' + n + ' section(s)' + (payload.updatedAt ? ' · ' + String(payload.updatedAt).slice(0, 10) : ''));
-            // Keep menu open so the status is visible; close after a short delay
             setTimeout(() => {
               const menu = document.getElementById('more-menu');
               if (menu) menu.classList.add('hidden');
             }, 2200);
             return;
           }
-          // Full backup: any theme / jp_* personal keys and/or content body
+
+          // 2. Lab ideas merge — appends new ideas only; never wipes existing Lab or any other key
+          if (payload.app === 'command-center-lab' || (Array.isArray(payload.ideas) && payload.ideas.length)) {
+            const incoming = payload.ideas || [];
+            let current = [];
+            try {
+              current = JSON.parse(localStorage.getItem(IDEA_KEY) || '[]');
+              if (!Array.isArray(current)) current = [];
+            } catch (e) { current = []; }
+
+            let added = 0;
+            incoming.forEach(raw => {
+              if (!raw || !raw.title) return;
+              const title = String(raw.title).trim();
+              if (!title) return;
+              // Skip if same title already exists (case-insensitive)
+              const exists = current.some(i => (i.title || '').toLowerCase() === title.toLowerCase());
+              if (exists) return;
+
+              current.unshift({
+                id: raw.id || Date.now() + Math.floor(Math.random() * 1000),
+                title: title,
+                vision: raw.vision || '',
+                synergies: raw.synergies || '',
+                options: Array.isArray(raw.options) ? raw.options : [],
+                bullets: Array.isArray(raw.bullets) ? raw.bullets : []
+              });
+              added++;
+            });
+
+            if (added > 0) {
+              localStorage.setItem(IDEA_KEY, JSON.stringify(current));
+              // Keep the in-memory array and UI in sync if Lab has already initialized
+              if (typeof ideas !== 'undefined') {
+                ideas = current;
+                if (typeof renderIdeas === 'function') renderIdeas();
+              }
+              setBackupStatus('✓ Lab · ' + added + ' idea' + (added === 1 ? '' : 's') + ' added (existing kept)');
+            } else {
+              setBackupStatus('Lab · no new ideas (already present or empty)');
+            }
+            setTimeout(() => {
+              const menu = document.getElementById('more-menu');
+              if (menu) menu.classList.add('hidden');
+            }, 2200);
+            return;
+          }
+
+          // 3. Full backup: any theme / jp_* personal keys and/or content body
           const data = payload.data || payload;
           const looksBackup = Object.keys(data || {}).some(k => isBackupKey(k) && data[k] != null) || BACKUP_KEYS.some(k => data[k] != null);
           if (looksBackup || payload.app === 'command-center') {
@@ -1667,7 +1716,8 @@
             setTimeout(() => location.reload(), 600);
             return;
           }
-          setBackupStatus('Unrecognized JSON — use full backup export or weekly content JSON');
+
+          setBackupStatus('Unrecognized JSON — use full backup, content JSON, or Lab merge JSON');
         } catch (e) {
           setBackupStatus('Import failed — invalid JSON');
           console.error(e);
