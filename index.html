@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + comfortable-gutter + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup + import-ios-fix + full-bleed-hero-vb + hero-flush + home-finance-sync + cash-def-v2 + goals-lab-sync + lab-merge-import + vision-board-external
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + comfortable-gutter + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup + import-ios-fix + full-bleed-hero-vb + hero-flush + home-finance-sync + cash-def-v2 + goals-lab-sync + lab-merge-import + vision-board-external + json-home-snapshot
   Base: user-provided polish-c (features + smart import)
   Change: Uniform section gutter px-3 on every tab. Main px-0. News extra L/R indent gone. Finance progress bars un-carded so labels align under section title. Home snapshot cards use px-3 horizontal. Entertainment/News category rows share title edge.
   2026-08-20: Import file — do not close more-menu on click (iOS file picker was cancelled); show status for ~2s after content import.
@@ -141,18 +141,18 @@
 </div>
 <div class="space-y-2">
 <div class="card p-3.5 border-l-4 border-l-indigo-500"><p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Focus</p><p class="text-sm font-semibold mt-0.5">Deliver first — then optimize</p></div>
-<div class="card p-3.5 border-l-4 border-l-emerald-500"><p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Cash</p><p class="text-sm font-semibold mt-0.5">Cash buffer $9.1k · ~$900 to $10k</p></div>
-<div class="card p-3.5 border-l-4 border-l-amber-500"><p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Wealth</p><p class="text-sm font-semibold mt-0.5">~$26.5k now · $60k emergency savings target</p></div>
+<div class="card p-3.5 border-l-4 border-l-emerald-500"><p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Cash</p><p class="text-sm font-semibold mt-0.5" id="home-cash-focus">Cash buffer $5.2k · ~$4.8k to $10k</p></div>
+<div class="card p-3.5 border-l-4 border-l-amber-500"><p class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Wealth</p><p class="text-sm font-semibold mt-0.5" id="home-wealth-line">~$22.7k now · $60k emergency savings target</p></div>
 </div>
 <div class="grid grid-cols-2 gap-3">
 <div class="kpi"><p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Monthly Savings</p><p class="mt-1 text-xl font-bold text-emerald-600 dark:text-emerald-400">~$4,000</p><p class="text-[11px] text-slate-500">~50% take-home</p></div>
-<div class="kpi"><p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Net Worth</p><p class="mt-1 text-xl font-bold">~$26,500</p><p class="text-[11px] text-slate-500">Brokerages + cash</p></div>
+<div class="kpi"><p class="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Net Worth</p><p class="mt-1 text-xl font-bold" id="home-net-worth">~$22,650</p><p class="text-[11px] text-slate-500">Brokerages + cash</p></div>
 </div>
 <div class="card px-3 py-4">
 <div class="flex items-center justify-between mb-3"><h2 class="font-semibold">Goals Snapshot</h2><span class="text-xs text-indigo-500">Goals tab →</span></div>
 <div class="space-y-3">
-<div><div class="flex justify-between text-sm mb-1"><span class="font-medium">$10k Cash Buffer</span><span class="text-slate-500">$9.1k · 91%</span></div><div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:91%"></div></div></div>
-<div><div class="flex justify-between text-sm mb-1"><span class="font-medium">$60k Emergency Savings</span><span class="text-slate-500">~$26.5k · 44%</span></div><div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:44%"></div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span class="font-medium">$10k Cash Buffer</span><span class="text-slate-500" id="home-cash-amt">$5.2k · 52%</span></div><div class="progress-bar"><div class="progress-fill bg-indigo-500" id="home-cash-bar" style="width:52%"></div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span class="font-medium">$60k Emergency Savings</span><span class="text-slate-500" id="home-emerg-amt">~$22.7k · 38%</span></div><div class="progress-bar"><div class="progress-fill bg-emerald-500" id="home-emerg-bar" style="width:38%"></div></div></div>
 <div><div class="flex justify-between text-sm mb-1"><span class="font-medium">Homestead / Cabin</span><span class="text-slate-500">Early</span></div><div class="progress-bar"><div class="progress-fill bg-amber-500" style="width:5%"></div></div></div>
 </div>
 </div>
@@ -673,14 +673,14 @@
 </div>
 </div>
 <div class="card p-4 space-y-3" data-goal-id="cash">
-<div class="flex items-start justify-between gap-2"><div><h3 class="font-semibold">$10k Cash Buffer</h3><p class="text-xs text-slate-500 mt-0.5">Most immediate · driven by actual cash</p></div><span class="text-sm font-medium text-indigo-500">91%</span></div>
+<div class="flex items-start justify-between gap-2"><div><h3 class="font-semibold">$10k Cash Buffer</h3><p class="text-xs text-slate-500 mt-0.5">Most immediate · driven by actual cash</p></div><span class="text-sm font-medium text-indigo-500" id="goal-cash-pct">52%</span></div>
 <div class="relative h-28 rounded-xl overflow-hidden -mx-1">
 <img alt="Cash buffer" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&amp;q=80"/>
 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 <p class="absolute bottom-2 left-3 text-white text-xs font-medium">Liquid safety</p>
 </div>
-<div class="progress-bar"><div class="progress-fill bg-indigo-500" style="width:91%"></div></div>
-<p class="text-xs text-slate-500">$9,098 / $10,000</p>
+<div class="progress-bar"><div class="progress-fill bg-indigo-500" id="goal-cash-bar" style="width:52%"></div></div>
+<p class="text-xs text-slate-500" id="goal-cash-amt">$5,158 / $10,000</p>
 <div>
 <p class="text-xs font-medium text-slate-500 mb-1">Notes / next steps</p>
 <ul class="goal-bullets space-y-1 mb-2" data-key="cash"></ul>
@@ -692,14 +692,14 @@
 <div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-3"><p class="text-xs font-medium text-slate-500 mb-1">Recommended</p><ul class="text-xs space-y-1 text-slate-600 dark:text-slate-300"><li>• Point monthly surplus straight to liquid savings</li><li>• Pause new stock buys until filled</li><li>• Review with screenshots every 2 weeks</li></ul></div>
 </div>
 <div class="card p-4 space-y-3" data-goal-id="nw">
-<div class="flex items-start justify-between gap-2"><div><h3 class="font-semibold">$60k Emergency Savings</h3><p class="text-xs text-slate-500 mt-0.5">Net worth / emergency buffer target</p></div><span class="text-sm font-medium text-emerald-500">44%</span></div>
+<div class="flex items-start justify-between gap-2"><div><h3 class="font-semibold">$60k Emergency Savings</h3><p class="text-xs text-slate-500 mt-0.5">Net worth / emergency buffer target</p></div><span class="text-sm font-medium text-emerald-500" id="goal-emerg-pct">38%</span></div>
 <div class="relative h-28 rounded-xl overflow-hidden -mx-1">
 <img alt="Net worth growth" class="img-cover" loading="lazy" src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&amp;q=80"/>
 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 <p class="absolute bottom-2 left-3 text-white text-xs font-medium">Building the base</p>
 </div>
-<div class="progress-bar"><div class="progress-fill bg-emerald-500" style="width:44%"></div></div>
-<p class="text-xs text-slate-500">~$26,500 / $60,000</p>
+<div class="progress-bar"><div class="progress-fill bg-emerald-500" id="goal-emerg-bar" style="width:38%"></div></div>
+<p class="text-xs text-slate-500" id="goal-emerg-amt">~$22,650 / $60,000</p>
 <div>
 <p class="text-xs font-medium text-slate-500 mb-1">Notes / next steps</p>
 <ul class="goal-bullets space-y-1 mb-2" data-key="nw"></ul>
@@ -1627,11 +1627,48 @@
 
     // --- Content updates (news / finance / entertainment) via JSON — not full HTML ---
     // CONTENT_KEY defined above with BACKUP_KEYS
+    function fmtMoneyK(n) {
+      const k = n / 1000;
+      const s = (Math.abs(k - Math.round(k)) < 0.05) ? String(Math.round(k)) : k.toFixed(1);
+      return s + 'k';
+    }
+    function applyFinanceSnapshot(snap) {
+      if (!snap) return false;
+      const cash = Number(snap.cash);
+      const cashGoal = Number(snap.cashGoal || 10000);
+      const emerg = Number(snap.emergency);
+      const emergGoal = Number(snap.emergencyGoal || 60000);
+      if (!isFinite(cash) || !isFinite(emerg)) return false;
+      const cashPct = Math.round((cash / cashGoal) * 100);
+      const emergPct = Math.round((emerg / emergGoal) * 100);
+      const cashK = fmtMoneyK(cash);
+      const emergK = fmtMoneyK(emerg);
+      const remainK = fmtMoneyK(Math.max(0, cashGoal - cash));
+      const cashFull = '$' + Math.round(cash).toLocaleString('en-US');
+      const emergFull = '$' + Math.round(emerg).toLocaleString('en-US');
+      const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      const setW = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = Math.max(0, Math.min(100, pct)) + '%'; };
+      setTxt('home-cash-focus', 'Cash buffer $' + cashK + ' · ~$' + remainK + ' to $10k');
+      setTxt('home-wealth-line', '~$' + emergK + ' now · $60k emergency savings target');
+      setTxt('home-net-worth', '~' + emergFull);
+      setTxt('home-cash-amt', '$' + cashK + ' · ' + cashPct + '%');
+      setTxt('home-emerg-amt', '~$' + emergK + ' · ' + emergPct + '%');
+      setW('home-cash-bar', cashPct);
+      setW('home-emerg-bar', emergPct);
+      setTxt('goal-cash-pct', cashPct + '%');
+      setTxt('goal-emerg-pct', emergPct + '%');
+      setTxt('goal-cash-amt', cashFull + ' / $10,000');
+      setTxt('goal-emerg-amt', '~' + emergFull + ' / $60,000');
+      setW('goal-cash-bar', cashPct);
+      setW('goal-emerg-bar', emergPct);
+      return true;
+    }
     function applyContentUpdate(payload) {
-      if (!payload || !payload.sections) return 0;
+      if (!payload) return 0;
       let n = 0;
+      const sections = payload.sections || {};
       ['finance', 'news', 'entertainment'].forEach(sec => {
-        const data = payload.sections[sec];
+        const data = sections[sec];
         if (!data) return;
         if (data.label) {
           const lab = document.getElementById(sec + '-label');
@@ -1642,6 +1679,7 @@
           if (body) { body.innerHTML = data.html; n++; }
         }
       });
+      if (applyFinanceSnapshot(payload.snapshot)) n++;
       if (payload.updatedAt) {
         try { localStorage.setItem(CONTENT_KEY, JSON.stringify(payload)); } catch (e) {}
       }
