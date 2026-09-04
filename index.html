@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <!--
-  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + comfortable-gutter + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup + import-ios-fix + full-bleed-hero-vb + hero-flush + home-finance-sync + cash-def-v2 + goals-lab-sync + lab-merge-import + vision-board-external + json-home-snapshot + tab-bar-lock
+  Command Center CC v2026-08-15-polish-c + full-ent-from-baseline + comfortable-gutter + seed-once + min-h + focus-protocol + full-backup-v2 + robust-backup + import-ios-fix + full-bleed-hero-vb + hero-flush + home-finance-sync + cash-def-v2 + goals-lab-sync + lab-merge-import + vision-board-external + json-home-snapshot + tab-bar-revert
   Base: user-provided polish-c (features + smart import)
   Change: Uniform section gutter px-3 on every tab. Main px-0. News extra L/R indent gone. Finance progress bars un-carded so labels align under section title. Home snapshot cards use px-3 horizontal. Entertainment/News category rows share title edge.
   2026-08-20: Import file — do not close more-menu on click (iOS file picker was cancelled); show status for ~2s after content import.
@@ -48,27 +48,8 @@
     .progress-bar { height: 8px; background: rgba(148,163,184,0.25); border-radius: 999px; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 999px; transition: width 0.3s ease; }
     .progress-fill { @apply h-full rounded-full transition-all duration-500; }
-    /* tab-bar-lock: short tabs (empty Projects) used to shrink the iOS visual
-       viewport and lift the fixed tab bar. Lock the shell to 100svh and scroll
-       only main so bottom:0 stays put. */
-    html, body {
-      height: 100%;
-      height: 100svh;
-      overflow: hidden;
-    }
-    #app-shell {
-      height: 100%;
-      height: 100svh;
-      min-height: 100svh;
-      overflow: hidden;
-    }
-    .section { display: none; padding-bottom: 6.5rem; }
-    main.flex-1 {
-      min-height: 0;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior: contain;
-    }
+    .section { display: none; padding-bottom: 6.5rem; min-height: calc(100dvh - 8rem); }
+    main.flex-1 { min-height: calc(100dvh - 8rem); }
     .section.active { display: block; }
     .todo-item.completed { @apply opacity-50 line-through; }
     .tab-bar { padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
